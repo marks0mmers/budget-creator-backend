@@ -1,4 +1,4 @@
-package com.marks0mmers.budgetcreator.util
+package com.marks0mmers.budgetcreator.util.extensions
 
 import reactor.core.publisher.Flux
 import java.util.function.Predicate

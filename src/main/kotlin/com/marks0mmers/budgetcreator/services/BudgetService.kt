@@ -2,6 +2,7 @@ package com.marks0mmers.budgetcreator.services
 
 import com.marks0mmers.budgetcreator.models.dto.BudgetDto
 import com.marks0mmers.budgetcreator.models.persistent.Budget
+import com.marks0mmers.budgetcreator.models.views.BudgetSubmissionView
 import com.marks0mmers.budgetcreator.repositories.BudgetRepository
 import com.marks0mmers.budgetcreator.util.fail
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,20 +21,21 @@ class BudgetService @Autowired constructor(
             }
             .map(::BudgetDto)
 
-    fun createBudgetForUser(budget: BudgetDto, username: String) = userService
+    fun createBudgetForUser(budget: BudgetSubmissionView, username: String) = userService
             .getUserByUsername(username)
             .flatMap {
                 budgetRepository.insert(Budget(budget, it.id ?: fail("User $username's ID is null")))
             }
             .map(::BudgetDto)
 
-    fun updateBudget(budgetId: String, budget: BudgetDto) = budgetRepository
+    fun updateBudget(budgetId: String, budget: BudgetSubmissionView) = budgetRepository
             .findById(budgetId)
             .flatMap {
                 budgetRepository.save(Budget(
                         it.id,
                         budget.title,
-                        it.primaryUserId
+                        it.primaryUserId,
+                        it.incomeSources
                 ))
             }
             .map(::BudgetDto)
