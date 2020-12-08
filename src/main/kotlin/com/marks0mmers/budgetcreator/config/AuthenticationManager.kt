@@ -7,12 +7,14 @@ import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import java.lang.Exception
 
-@Component
-class AuthenticationManager @Autowired constructor(private val jwtUtil: JWTUtil) : ReactiveAuthenticationManager {
+class AuthenticationManager : ReactiveAuthenticationManager {
+
+    @Autowired
+    lateinit var jwtUtil: JWTUtil
+
     override fun authenticate(authentication: Authentication?): Mono<Authentication> {
         val authToken = authentication?.credentials.toString()
         val username = try {

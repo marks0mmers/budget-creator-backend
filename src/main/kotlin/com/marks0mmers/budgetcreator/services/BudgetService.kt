@@ -5,12 +5,9 @@ import com.marks0mmers.budgetcreator.models.persistent.Budget
 import com.marks0mmers.budgetcreator.models.views.BudgetSubmissionView
 import com.marks0mmers.budgetcreator.repositories.BudgetRepository
 import com.marks0mmers.budgetcreator.util.fail
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
-@Service
-class BudgetService @Autowired constructor(
+class BudgetService (
         private val budgetRepository: BudgetRepository,
         private val userService: UserService
 ) {

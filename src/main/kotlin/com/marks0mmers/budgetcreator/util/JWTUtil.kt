@@ -5,12 +5,10 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
 import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
 
-@Component
 class JWTUtil : Serializable {
     @Value("\${springbootwebfluxjjwt.jjwt.secret}")
     private val secret: String? = null

@@ -5,16 +5,13 @@ import com.marks0mmers.budgetcreator.models.dto.CreateUserDto
 import com.marks0mmers.budgetcreator.models.persistent.Role
 import com.marks0mmers.budgetcreator.models.persistent.User
 import com.marks0mmers.budgetcreator.repositories.UserRepository
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
 
-@Service
-class UserService @Autowired constructor(
+class UserService (
         private val userRepository: UserRepository,
         private val passwordEncoder: PBKDF2Encoder
 ) {
     fun login(username: String, password: String) = getUserByUsername(username)
-            .filter { it != null && passwordEncoder.matches(password, it.password) }
+        .filter { it != null && passwordEncoder.matches(password, it.password) }
 
     fun getUserByUsername(username: String) = userRepository
             .findByUsername(username)

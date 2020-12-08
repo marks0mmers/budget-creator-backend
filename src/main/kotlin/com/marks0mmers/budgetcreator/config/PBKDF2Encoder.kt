@@ -2,14 +2,12 @@ package com.marks0mmers.budgetcreator.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.stereotype.Component
 import java.security.NoSuchAlgorithmException
 import java.security.spec.InvalidKeySpecException
 import java.util.*
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
-@Component
 class PBKDF2Encoder : PasswordEncoder {
 
     @Value("\${springbootwebfluxjjwt.password.encoder.secret}")

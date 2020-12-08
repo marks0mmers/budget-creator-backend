@@ -2,11 +2,8 @@ package com.marks0mmers.budgetcreator.services
 
 import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
 import com.marks0mmers.budgetcreator.repositories.BudgetRepository
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
 
-@Service
-class IncomeSourceService @Autowired constructor(
+class IncomeSourceService (
         private val budgetRepository: BudgetRepository
 ) {
     fun addIncomeSourceToBudget(budgetId: String, incomeSource: IncomeSourceSubmissionView) = budgetRepository

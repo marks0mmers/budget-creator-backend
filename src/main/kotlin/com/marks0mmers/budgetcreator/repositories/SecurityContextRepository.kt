@@ -7,15 +7,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.security.web.server.context.ServerSecurityContextRepository
-import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 import java.lang.UnsupportedOperationException
 
-@Component
-class SecurityContextRepository @Autowired constructor(
-        val authenticationManager: AuthenticationManager
-) : ServerSecurityContextRepository {
+class SecurityContextRepository : ServerSecurityContextRepository {
+
+    @Autowired
+    private lateinit var authenticationManager: AuthenticationManager
+
     override fun save(swe: ServerWebExchange?, sc: SecurityContext?): Mono<Void> {
         throw UnsupportedOperationException("Not Supported Yet.")
     }

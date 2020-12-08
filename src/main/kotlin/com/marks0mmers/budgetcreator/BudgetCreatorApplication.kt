@@ -7,5 +7,7 @@ import org.springframework.boot.runApplication
 class BudgetCreatorApplication
 
 fun main(args: Array<String>) {
-	runApplication<BudgetCreatorApplication>(*args)
+	runApplication<BudgetCreatorApplication>(*args) {
+		this.addInitializers(BeansInitializer())
+	}
 }
