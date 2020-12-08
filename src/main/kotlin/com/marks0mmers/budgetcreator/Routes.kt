@@ -17,26 +17,23 @@ class Routes(
                 "/users".nest {
                     GET(userHandler::getCurrentUser)
                     GET("/{userId}", userHandler::getUserById)
-                    POST(userHandler::createUser)
                     POST("/login", userHandler::login)
+                    POST(userHandler::createUser)
                 }
-                "/budget".nest {
-                    GET(budgetHandler::getBudgetsForUser)
-                    POST(budgetHandler::createBudget)
-
+                "/budgets".nest {
                     "/{budgetId}".nest {
-                        PUT(budgetHandler::updateBudget)
-                        DELETE(budgetHandler::deleteBudget)
-
                         "/incomeSource".nest {
-                            POST(incomeSourceHandler::addIncomeSourceToBudget)
-
                             "/{incomeSourceId}".nest {
                                 PUT(incomeSourceHandler::updateIncomeSourceOnBudget)
                                 DELETE(incomeSourceHandler::deleteIncomeSourceFromBudget)
                             }
+                            POST(incomeSourceHandler::addIncomeSourceToBudget)
                         }
+                        PUT(budgetHandler::updateBudget)
+                        DELETE(budgetHandler::deleteBudget)
                     }
+                    GET(budgetHandler::getBudgetsForUser)
+                    POST(budgetHandler::createBudget)
                 }
             }
         }

@@ -4,6 +4,9 @@ spring:
       database: budgetcreator
 server:
   port: 8000
+logging:
+  level:
+    root: DEBUG
 springbootwebfluxjjwt:
   password:
     encoder:

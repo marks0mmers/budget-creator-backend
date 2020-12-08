@@ -1,6 +1,7 @@
 package com.marks0mmers.budgetcreator.models.persistent
 
 import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
+import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -11,7 +12,7 @@ data class IncomeSource(
         val amount: Double
 ) {
     constructor(incomeSourceDto: IncomeSourceSubmissionView): this(
-            null,
+            ObjectId().toHexString(),
             incomeSourceDto.name,
             incomeSourceDto.amount
     )
