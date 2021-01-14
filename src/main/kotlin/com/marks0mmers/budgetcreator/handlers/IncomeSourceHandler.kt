@@ -2,33 +2,39 @@ package com.marks0mmers.budgetcreator.handlers
 
 import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
 import com.marks0mmers.budgetcreator.services.IncomeSourceService
+import com.marks0mmers.budgetcreator.util.handleException
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.reactive.function.server.*
 import org.springframework.web.reactive.function.server.ServerResponse.*
 
+class IncomeSourceHandler {
+    @Autowired
+    lateinit var incomeSourceService: IncomeSourceService
 
-class IncomeSourceHandler (
-        private val incomeSourceService: IncomeSourceService
-) {
-    fun addIncomeSourceToBudget(req: ServerRequest) = req
-            .bodyToMono<IncomeSourceSubmissionView>()
-            .map { incomeSourceService.addIncomeSourceToBudget(req.pathVariable("budgetId"), it) }
-            .flatMap { ok().body(it) }
-            .switchIfEmpty(notFound().build())
+    suspend fun addIncomeSourceToBudget(req: ServerRequest) = try {
+        val body = req.awaitBody<IncomeSourceSubmissionView>()
+        val addedIncomeSource = incomeSourceService.addIncomeSourceToBudget(req.pathVariable("budgetId"), body)
+        ok().json()
+            .bodyValueAndAwait(addedIncomeSource)
+    } catch (e: Exception) { handleException(e) }
 
-    fun updateIncomeSourceOnBudget(req: ServerRequest) = req
-            .bodyToMono<IncomeSourceSubmissionView>()
-            .map { incomeSourceService.updateIncomeSource(
-                    req.pathVariable("budgetId"),
-                    req.pathVariable("incomeSourceId"),
-                    it
-            ) }
-            .flatMap { ok().body(it) }
-            .switchIfEmpty(notFound().build())
+    suspend fun updateIncomeSourceOnBudget(req: ServerRequest) = try {
+        val body = req.awaitBody<IncomeSourceSubmissionView>()
+        val updatedIncomeSource = incomeSourceService.updateIncomeSource(
+            req.pathVariable("budgetId"),
+            req.pathVariable("incomeSourceId"),
+            body
+        )
+        ok().json()
+            .bodyValueAndAwait(updatedIncomeSource)
+    } catch (e: Exception) { handleException(e) }
 
-    fun deleteIncomeSourceFromBudget(req: ServerRequest) = ok()
-            .body(incomeSourceService.removeIncomeSourceFromBudget(
-                    req.pathVariable("budgetId"),
-                    req.pathVariable("incomeSourceId")
-            ))
-            .switchIfEmpty(notFound().build())
+    suspend fun deleteIncomeSourceFromBudget(req: ServerRequest) = try {
+        val removedIncomeSource = incomeSourceService.removeIncomeSourceFromBudget(
+            req.pathVariable("budgetId"),
+            req.pathVariable("incomeSourceId")
+        )
+        ok().json()
+            .bodyValueAndAwait(removedIncomeSource)
+    } catch (e: Exception) { handleException(e) }
 }

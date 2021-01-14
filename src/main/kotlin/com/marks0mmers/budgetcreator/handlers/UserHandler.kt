@@ -5,18 +5,20 @@ import com.marks0mmers.budgetcreator.models.dto.CreateUserDto
 import com.marks0mmers.budgetcreator.models.dto.UserDto
 import com.marks0mmers.budgetcreator.models.persistent.User
 import com.marks0mmers.budgetcreator.services.UserService
-import com.marks0mmers.budgetcreator.util.BudgetCreatorException
 import com.marks0mmers.budgetcreator.util.JWTUtil
 import com.marks0mmers.budgetcreator.util.fail
 import com.marks0mmers.budgetcreator.util.handleException
-import org.springframework.http.HttpStatus
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.reactive.function.server.*
 import org.springframework.web.reactive.function.server.ServerResponse.*
 
-class UserHandler(
-        private val userService: UserService,
-        private val jwtUtil: JWTUtil
-) {
+class UserHandler {
+    @Autowired
+    lateinit var userService: UserService
+
+    @Autowired
+    lateinit var jwtUtil: JWTUtil
+
     suspend fun login(req: ServerRequest) = try {
         val body = req.awaitBody<AuthRequest>()
         val user = userService.login(body.username, body.password)

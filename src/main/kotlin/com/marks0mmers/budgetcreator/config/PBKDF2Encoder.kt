@@ -9,7 +9,6 @@ import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
 class PBKDF2Encoder : PasswordEncoder {
-
     @Value("\${springbootwebfluxjjwt.password.encoder.secret}")
     private val secret: String? = null
 

@@ -11,7 +11,6 @@ import reactor.core.publisher.Mono
 import java.lang.Exception
 
 class AuthenticationManager : ReactiveAuthenticationManager {
-
     @Autowired
     lateinit var jwtUtil: JWTUtil
 

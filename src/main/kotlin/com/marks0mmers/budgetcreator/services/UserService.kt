@@ -8,13 +8,17 @@ import com.marks0mmers.budgetcreator.repositories.UserRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.reactive.awaitFirstOrElse
 import kotlinx.coroutines.reactive.awaitFirstOrNull
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import reactor.core.publisher.Mono
 
-class UserService(
-    private val userRepository: UserRepository,
-    private val passwordEncoder: PBKDF2Encoder
-) {
+class UserService {
+    @Autowired
+    lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var passwordEncoder: PBKDF2Encoder
+
     suspend fun login(username: String, password: String): User {
         val user = getUserByUsername(username)
         return if (passwordEncoder.matches(password, user.password)) {
