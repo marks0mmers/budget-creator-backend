@@ -27,7 +27,7 @@ data class Budget(
         budget.primaryUserId,
         budget.incomeSources.map { IncomeSource(it) }
     ) {
-
+        id = budget.id
     }
 
     fun addIncomeSource(incomeSource: IncomeSourceSubmissionView): Budget {

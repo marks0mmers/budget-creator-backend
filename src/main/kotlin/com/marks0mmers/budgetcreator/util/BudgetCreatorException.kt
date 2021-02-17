@@ -13,9 +13,3 @@ fun fail(message: String): Nothing {
 fun fail(message: String, status: HttpStatus): Nothing {
     throw BudgetCreatorException(message, status)
 }
-
-suspend fun handleException(e: Exception): ServerResponse = when(e) {
-    is BudgetCreatorException -> ServerResponse.status(e.status)
-        .bodyValueAndAwait(e.message)
-    else -> throw e
-}
