@@ -40,18 +40,14 @@ class RequestLoggingFilter : WebFilter {
     }
 
     private fun getStatus(response: ServerHttpResponse): HttpStatus {
-        return try {
-            response.statusCode ?: HttpStatus.CONTINUE
-        } catch (ex: Exception) {
-            HttpStatus.CONTINUE
-        }
+        return response.statusCode ?: HttpStatus.CONTINUE
     }
 
-    override fun filter(p0: ServerWebExchange, p1: WebFilterChain): Mono<Void> {
-        logger.info(getRequestMessage(p0))
-        val filter = p1.filter(p0)
-        p0.response.beforeCommit {
-            logger.info(getResponseMessage(p0))
+    override fun filter(swe: ServerWebExchange, wfc: WebFilterChain): Mono<Void> {
+        logger.info(getRequestMessage(swe))
+        val filter = wfc.filter(swe)
+        swe.response.beforeCommit {
+            logger.info(getResponseMessage(swe))
             Mono.empty()
         }
         return filter
