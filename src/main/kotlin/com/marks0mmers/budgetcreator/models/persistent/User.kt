@@ -7,8 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails
 
 @Document
 data class User(
-        @Id
-        var id: String? = null,
         private var username: String,
         private var password: String,
         var firstName: String,
@@ -16,6 +14,8 @@ data class User(
         var enabled: Boolean,
         var roles: List<Role>
 ) : UserDetails {
+    @Id var id: String? = null
+    
     override fun isEnabled() = enabled
     override fun getUsername() = username
     override fun isCredentialsNonExpired() = false

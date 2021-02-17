@@ -4,6 +4,4 @@ import com.marks0mmers.budgetcreator.models.persistent.Budget
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import reactor.core.publisher.Flux
 
-interface BudgetRepository : ReactiveMongoRepository<Budget, String> {
-    fun findByPrimaryUserId(primaryUserId: String?): Flux<Budget>
-}
+interface BudgetRepository : ReactiveMongoRepository<Budget, String>

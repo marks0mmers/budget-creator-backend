@@ -6,8 +6,8 @@ server:
   port: 8000
 logging:
   level:
-    root: DEBUG
-springbootwebfluxjjwt:
+    root: INFO
+json-web-token:
   password:
     encoder:
       secret: mysecret

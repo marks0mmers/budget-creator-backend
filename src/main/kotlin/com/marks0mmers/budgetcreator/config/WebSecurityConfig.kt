@@ -13,24 +13,25 @@ import reactor.core.publisher.Mono
 
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
-class WebSecurityConfig @Autowired constructor(
-    val authenticationManager: AuthenticationManager,
-    val securityContextRepository: SecurityContextRepository
-) {
+class WebSecurityConfig {
+
+    @Autowired lateinit var authenticationManager: AuthenticationManager
+    @Autowired lateinit var securityContextRepository: SecurityContextRepository
+
     @Bean
     fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain = http
-        .exceptionHandling()
-        .authenticationEntryPoint { swe, _ -> Mono.fromRunnable { swe.response.statusCode = HttpStatus.UNAUTHORIZED } }
-        .accessDeniedHandler { swe, _ -> Mono.fromRunnable { swe.response.statusCode = HttpStatus.FORBIDDEN } }
-        .and()
         .csrf().disable()
         .formLogin().disable()
         .httpBasic().disable()
         .authenticationManager(authenticationManager)
         .securityContextRepository(securityContextRepository)
+        .exceptionHandling()
+            .authenticationEntryPoint { swe, _ -> Mono.fromRunnable { swe.response.statusCode = HttpStatus.UNAUTHORIZED } }
+            .accessDeniedHandler { swe, _ -> Mono.fromRunnable { swe.response.statusCode = HttpStatus.FORBIDDEN } }
+        .and()
         .authorizeExchange()
-        .pathMatchers(HttpMethod.OPTIONS).permitAll()
-        .pathMatchers(HttpMethod.POST, "/api/users", "/api/users/login").permitAll()
-        .anyExchange().authenticated()
+            .pathMatchers(HttpMethod.OPTIONS).permitAll()
+            .pathMatchers(HttpMethod.POST, "/api/users", "/api/users/login").permitAll()
+            .anyExchange().authenticated()
         .and().build()
 }

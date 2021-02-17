@@ -1,5 +1,7 @@
 package com.marks0mmers.budgetcreator.models.persistent
 
+import com.marks0mmers.budgetcreator.models.dto.BudgetDto
+import com.marks0mmers.budgetcreator.models.dto.IncomeSourceDto
 import com.marks0mmers.budgetcreator.models.views.BudgetSubmissionView
 import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
 import com.marks0mmers.budgetcreator.util.fail
@@ -8,33 +10,45 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
 data class Budget(
-        @Id val id: String? = null,
-        val title: String,
-        val primaryUserId: String,
-        val incomeSources: List<IncomeSource>
+    val title: String,
+    val primaryUserId: String,
+    val incomeSources: List<IncomeSource>
 ) {
-        constructor(budget: BudgetSubmissionView, primaryUserId: String): this(
-                null,
-                budget.title,
-                primaryUserId,
-                listOf()
-        )
+    @Id var id: String? = null
 
-        fun addIncomeSource(incomeSource: IncomeSourceSubmissionView) = Budget(
-                id, title, primaryUserId,
-                listOf(*incomeSources.toTypedArray(), IncomeSource(incomeSource))
-        )
+    constructor(budget: BudgetSubmissionView, primaryUserId: String) : this(
+        budget.title,
+        primaryUserId,
+        listOf()
+    )
 
-        fun updateIncomeSource(incomeSourceId: String, incomeSource: IncomeSourceSubmissionView) = Budget(
-                id, title, primaryUserId,
-                listOf(
-                        *incomeSources.filter { it.id != incomeSourceId }.toTypedArray(),
-                        incomeSources.find { it.id == incomeSourceId }?.let { IncomeSource(it.id, incomeSource.name, incomeSource.amount) } ?: fail("Income Source not found")
-                )
-        )
+    constructor(budget: BudgetDto) : this(
+        budget.title,
+        budget.primaryUserId,
+        budget.incomeSources.map { IncomeSource(it) }
+    ) {
 
-        fun removeIncomeSource(incomeSourceId: String) = Budget(
-                id, title, primaryUserId,
-                incomeSources.filter { it.id != incomeSourceId }
+    }
+
+    fun addIncomeSource(incomeSource: IncomeSourceSubmissionView): Budget {
+        return copy(
+            incomeSources = listOf(*incomeSources.toTypedArray(), IncomeSource(incomeSource))
         )
+    }
+
+    fun updateIncomeSource(incomeSource: IncomeSourceDto): Budget {
+        return copy(
+            incomeSources = listOf(
+                *incomeSources.filter { it.id != incomeSource.id }.toTypedArray(),
+                incomeSources.find { it.id == incomeSource.id }
+                    ?.let { IncomeSource(incomeSource) } ?: fail("Income Source not found")
+            )
+        )
+    }
+
+    fun removeIncomeSource(incomeSourceId: String): Budget {
+        return copy(
+            incomeSources = incomeSources.filter { it.id != incomeSourceId }
+        )
+    }
 }

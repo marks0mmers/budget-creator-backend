@@ -1,40 +1,40 @@
 package com.marks0mmers.budgetcreator.services
 
-import com.marks0mmers.budgetcreator.config.PBKDF2Encoder
-import com.marks0mmers.budgetcreator.models.dto.CreateUserDto
+import com.marks0mmers.budgetcreator.config.PasswordEncoder
+import com.marks0mmers.budgetcreator.models.dto.UserDto
 import com.marks0mmers.budgetcreator.models.persistent.Role
 import com.marks0mmers.budgetcreator.models.persistent.User
+import com.marks0mmers.budgetcreator.models.views.CreateUserView
 import com.marks0mmers.budgetcreator.repositories.UserRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.reactive.awaitFirstOrElse
-import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import reactor.core.publisher.Mono
+import org.springframework.stereotype.Service
 
+@Service
 class UserService {
-    @Autowired
-    lateinit var userRepository: UserRepository
-
-    @Autowired
-    lateinit var passwordEncoder: PBKDF2Encoder
+    @Autowired lateinit var userRepository: UserRepository
+    @Autowired lateinit var passwordEncoder: PasswordEncoder
 
     suspend fun login(username: String, password: String): User {
-        val user = getUserByUsername(username)
-        return if (passwordEncoder.matches(password, user.password)) {
-            user
-        } else {
-            fail("Passwords don't match", HttpStatus.UNAUTHORIZED)
-        }
+        val user = userRepository
+            .findByUsername(username)
+            .awaitFirstOrElse { fail("Cannot find user with username: $username") }
+        return if (passwordEncoder.matches(password, user.password)) user else fail(
+            "Passwords don't match",
+            HttpStatus.UNAUTHORIZED
+        )
     }
 
-    suspend fun getUserByUsername(username: String): User {
+    suspend fun getUserByUsername(username: String): UserDto {
         return userRepository
             .findByUsername(username)
             .awaitFirstOrElse { fail("Cannot find user $username", HttpStatus.NOT_FOUND) }
+            .let { UserDto(it) }
     }
 
-    suspend fun createUser(user: CreateUserDto): User {
+    suspend fun createUser(user: CreateUserView): UserDto {
         return userRepository
             .save(
                 User(
@@ -47,11 +47,13 @@ class UserService {
                 )
             )
             .awaitFirstOrElse { fail("Failed to save user") }
+            .let { UserDto(it) }
     }
 
-    suspend fun getUserById(userId: String): User {
+    suspend fun getUserById(userId: String): UserDto {
         return userRepository
             .findById(userId)
             .awaitFirstOrElse { fail("User with id: $userId doesn't exist", HttpStatus.NOT_FOUND) }
+            .let { UserDto(it) }
     }
 }

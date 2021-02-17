@@ -1,34 +1,39 @@
 package com.marks0mmers.budgetcreator.config
 
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.security.crypto.password.PasswordEncoder
-import java.security.NoSuchAlgorithmException
-import java.security.spec.InvalidKeySpecException
+import org.springframework.stereotype.Component
 import java.util.*
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
-class PBKDF2Encoder : PasswordEncoder {
-    @Value("\${springbootwebfluxjjwt.password.encoder.secret}")
-    private val secret: String? = null
+@Component
+@ConfigurationProperties(prefix = "json-web-token.password.encoder")
+class PasswordEncoder : PasswordEncoder {
+    var secret: String = ""
+    var iteration: Int = 0
+    var keylength: Int = 0
 
-    @Value("\${springbootwebfluxjjwt.password.encoder.iteration}")
-    private val iteration: Int? = null
-
-    @Value("\${springbootwebfluxjjwt.password.encoder.keylength}")
-    private val keyLength: Int? = null
-
-    @Throws(InvalidKeySpecException::class, NoSuchAlgorithmException::class)
     override fun encode(cs: CharSequence?): String {
         return try {
             val result = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512")
-                    .generateSecret(PBEKeySpec(cs.toString().toCharArray(), secret?.toByteArray(), iteration ?: 0, keyLength ?: 0))
-                    .encoded
+                .generateSecret(
+                    PBEKeySpec(
+                        cs.toString().toCharArray(),
+                        secret.toByteArray(),
+                        iteration,
+                        keylength
+                    )
+                )
+                .encoded
             Base64.getEncoder().encodeToString(result)
+        } catch (e: Exception) {
+            throw e
         }
-        catch (ex: NoSuchAlgorithmException) { throw ex }
-        catch (ex: InvalidKeySpecException) { throw ex }
     }
 
-    override fun matches(cs: CharSequence?, pw: String?) = encode(cs) == pw
+    override fun matches(cs: CharSequence?, pw: String?): Boolean {
+        return encode(cs) == pw
+    }
+
 }
