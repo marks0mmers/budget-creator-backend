@@ -1,6 +1,6 @@
 package com.marks0mmers.budgetcreator.services
 
-import com.marks0mmers.budgetcreator.config.PasswordEncoder
+import com.marks0mmers.budgetcreator.config.security.PasswordEncoder
 import com.marks0mmers.budgetcreator.models.dto.UserDto
 import com.marks0mmers.budgetcreator.models.persistent.Role
 import com.marks0mmers.budgetcreator.models.persistent.User

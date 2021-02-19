@@ -1,4 +1,4 @@
-package com.marks0mmers.budgetcreator.util
+package com.marks0mmers.budgetcreator.config.security
 
 import com.marks0mmers.budgetcreator.models.dto.UserDto
 import com.marks0mmers.budgetcreator.models.persistent.User
@@ -60,13 +60,13 @@ class JWTUtil : Serializable {
     }
 
     private fun doGenerateToken(claims: Map<String, Any>, username: String): String {
-        val createdDate = Date()
-        val expirationDate = Date(createdDate.time + expirationTime * 1000)
+        val createdDate = Instant.now()
+        val expirationDate = createdDate.plusMillis(expirationTime * 1000)
         return Jwts.builder()
             .setClaims(claims)
             .setSubject(username)
-            .setIssuedAt(createdDate)
-            .setExpiration(expirationDate)
+            .setIssuedAt(Date.from(createdDate))
+            .setExpiration(Date.from(expirationDate))
             .signWith(SignatureAlgorithm.HS512, Base64.getEncoder().encodeToString(secret.toByteArray()))
             .compact()
     }

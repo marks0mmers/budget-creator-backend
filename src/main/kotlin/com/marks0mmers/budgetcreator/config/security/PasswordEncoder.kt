@@ -1,4 +1,4 @@
-package com.marks0mmers.budgetcreator.config
+package com.marks0mmers.budgetcreator.config.security
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.security.crypto.password.PasswordEncoder

@@ -1,7 +1,6 @@
-package com.marks0mmers.budgetcreator.config
+package com.marks0mmers.budgetcreator.config.security
 
 import com.marks0mmers.budgetcreator.models.persistent.Role
-import com.marks0mmers.budgetcreator.util.JWTUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.security.authentication.ReactiveAuthenticationManager

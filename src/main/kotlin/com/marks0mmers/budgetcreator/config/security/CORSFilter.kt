@@ -1,4 +1,4 @@
-package com.marks0mmers.budgetcreator.config
+package com.marks0mmers.budgetcreator.config.security
 
 import org.springframework.web.reactive.config.CorsRegistry
 import org.springframework.context.annotation.Configuration
