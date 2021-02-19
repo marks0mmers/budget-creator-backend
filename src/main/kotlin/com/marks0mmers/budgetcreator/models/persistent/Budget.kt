@@ -19,7 +19,7 @@ data class Budget(
     constructor(budget: BudgetSubmissionView, primaryUserId: String) : this(
         budget.title,
         primaryUserId,
-        listOf()
+        emptyList()
     )
 
     constructor(budget: BudgetDto) : this(

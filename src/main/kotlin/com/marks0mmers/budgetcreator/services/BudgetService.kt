@@ -36,18 +36,22 @@ class BudgetService {
 
     suspend fun createBudgetForUser(budget: BudgetSubmissionView, username: String): BudgetDto {
         val user = userService.getUserByUsername(username)
-        val createdBudget = budgetRepository
+        return budgetRepository
             .insert(Budget(budget, user.id))
             .awaitFirstOrElse { fail("Failed to create user") }
-        return BudgetDto(createdBudget)
+            .let { BudgetDto(it) }
     }
 
     suspend fun updateBudget(budgetId: String, budgetSubmission: BudgetSubmissionView): BudgetDto {
         val budget = getBudgetById(budgetId)
         return budgetRepository
-            .save(Budget(budget.copy(
-                title = budgetSubmission.title
-            )))
+            .save(
+                Budget(
+                    budget.copy(
+                        title = budgetSubmission.title
+                    )
+                )
+            )
             .awaitFirstOrElse { fail("Failed to update budget") }
             .let { BudgetDto(it) }
     }
