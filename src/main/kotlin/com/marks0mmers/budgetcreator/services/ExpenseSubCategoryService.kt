@@ -6,14 +6,11 @@ import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
 import com.marks0mmers.budgetcreator.repositories.ExpenseCategoryRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.reactive.awaitFirstOrElse
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Service
 
 @Service
-class ExpenseSubCategoryService {
-    @Autowired lateinit var expenseCategoryRepository: ExpenseCategoryRepository
-
+class ExpenseSubCategoryService(private val expenseCategoryRepository: ExpenseCategoryRepository) {
     suspend fun addExpenseSubCategoryToExpenseCategory(
         expenseCategoryId: String,
         expenseSubCategory: ExpenseCategorySubmissionView

@@ -6,16 +6,17 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.stereotype.Component
 import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
-import org.springframework.stereotype.Component
 import java.time.Instant
 
+@Component
 @ConfigurationProperties("json-web-token.jjwt")
 class JWTUtil : Serializable {
-    var secret: String = ""
-    var expirationTime: Long = 0
+    private var secret: String = ""
+    private var expirationTime: Long = 0
 
     fun getAllClaimsFromToken(token: String): Claims? {
         val encodedString = Base64.getEncoder().encodeToString(secret.toByteArray())
@@ -34,11 +35,11 @@ class JWTUtil : Serializable {
         return getAllClaimsFromToken(token)?.subject
     }
 
-    fun getExpirationDateFromToken(token: String): Instant? {
+    private fun getExpirationDateFromToken(token: String): Instant? {
         return getAllClaimsFromToken(token)?.expiration?.toInstant()
     }
 
-    fun isTokenExpired(token: String): Boolean {
+    private fun isTokenExpired(token: String): Boolean {
         return getExpirationDateFromToken(token)?.isBefore(Instant.now()) ?: true
     }
 

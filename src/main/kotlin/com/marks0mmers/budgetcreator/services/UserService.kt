@@ -8,15 +8,11 @@ import com.marks0mmers.budgetcreator.models.views.CreateUserView
 import com.marks0mmers.budgetcreator.repositories.UserRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.reactive.awaitFirstOrElse
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
-class UserService {
-    @Autowired lateinit var userRepository: UserRepository
-    @Autowired lateinit var passwordEncoder: PasswordEncoder
-
+class UserService(private val userRepository: UserRepository, private val passwordEncoder: PasswordEncoder) {
     suspend fun login(username: String, password: String): User {
         val user = userRepository
             .findByUsername(username)

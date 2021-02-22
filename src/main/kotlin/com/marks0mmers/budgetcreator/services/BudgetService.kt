@@ -11,14 +11,10 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirstOrElse
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class BudgetService {
-    @Autowired lateinit var budgetRepository: BudgetRepository
-    @Autowired lateinit var userService: UserService
-
+class BudgetService(private val budgetRepository: BudgetRepository, private val userService: UserService) {
     fun getAllBudgetItemsForUser(username: String): Flow<BudgetDto> {
         return budgetRepository
             .findAll()
@@ -27,7 +23,7 @@ class BudgetService {
             .map { BudgetDto(it) }
     }
 
-    suspend fun getBudgetById(budgetId: String): BudgetDto {
+    private suspend fun getBudgetById(budgetId: String): BudgetDto {
         return budgetRepository
             .findById(budgetId)
             .awaitFirstOrElse { fail("Cannot find budget with ID: $budgetId") }

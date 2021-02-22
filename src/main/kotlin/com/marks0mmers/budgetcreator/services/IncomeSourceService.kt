@@ -6,14 +6,11 @@ import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
 import com.marks0mmers.budgetcreator.repositories.BudgetRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.reactive.awaitFirstOrElse
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Service
 
 @Service
-class IncomeSourceService {
-    @Autowired lateinit var budgetRepository: BudgetRepository
-
+class IncomeSourceService(private val budgetRepository: BudgetRepository) {
     suspend fun addIncomeSourceToBudget(budgetId: String, incomeSource: IncomeSourceSubmissionView): Budget {
         val budget = budgetRepository
             .findById(budgetId)

@@ -10,12 +10,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirstOrElse
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class ExpenseCategoryService {
-    @Autowired lateinit var expenseCategoryRepository: ExpenseCategoryRepository
+class ExpenseCategoryService(val expenseCategoryRepository: ExpenseCategoryRepository) {
 
     fun getExpenseCategories(): Flow<ExpenseCategoryDto> {
         return expenseCategoryRepository
