@@ -1,18 +1,13 @@
 package com.marks0mmers.budgetcreator.config.security
 
 import com.marks0mmers.budgetcreator.models.persistent.Role
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import reactor.core.publisher.Mono
 
-@Component
-class AuthenticationManager : ReactiveAuthenticationManager {
-    @Autowired lateinit var jwtUtil: JWTUtil
-
+class AuthenticationManager(private val jwtUtil: JWTUtil) : ReactiveAuthenticationManager {
     override fun authenticate(authentication: Authentication?): Mono<Authentication> {
         val authToken = authentication?.credentials.toString()
         val username = jwtUtil.getUsernameFromToken(authToken) ?: return Mono.empty()

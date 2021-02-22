@@ -2,16 +2,12 @@ package com.marks0mmers.budgetcreator.controllers
 
 import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
 import com.marks0mmers.budgetcreator.services.ExpenseCategoryService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.*
 
 @Configuration
-class ExpenseCategoryController {
-
-    @Autowired lateinit var expenseCategoryService: ExpenseCategoryService
-
+class ExpenseCategoryController(val expenseCategoryService: ExpenseCategoryService) {
     @Bean
     fun expenseCategoryRouter() = coRouter {
         "/api".nest {

@@ -17,7 +17,6 @@ import reactor.core.publisher.Mono
 @Component
 @Order(-999)
 class RequestLoggingFilter : WebFilter {
-
     private val logger = LoggerFactory.getLogger(RequestLoggingFilter::class.java)
 
     fun getRequestMessage(exchange: ServerWebExchange): String {

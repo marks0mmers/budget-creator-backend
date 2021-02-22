@@ -1,4 +1,5 @@
 package com.marks0mmers.budgetcreator.controllers
+
 import com.marks0mmers.budgetcreator.models.dto.UserDto
 import com.marks0mmers.budgetcreator.models.persistent.User
 import com.marks0mmers.budgetcreator.models.views.AuthRequestView
@@ -6,16 +7,12 @@ import com.marks0mmers.budgetcreator.models.views.CreateUserView
 import com.marks0mmers.budgetcreator.services.UserService
 import com.marks0mmers.budgetcreator.config.security.JWTUtil
 import com.marks0mmers.budgetcreator.util.fail
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.*
 
 @Configuration
-class UserController {
-    @Autowired lateinit var userService: UserService
-    @Autowired lateinit var jwtUtil: JWTUtil
-
+class UserController(val userService: UserService, val jwtUtil: JWTUtil) {
     @Bean
     fun userRouter() = coRouter {
         "/api".nest {

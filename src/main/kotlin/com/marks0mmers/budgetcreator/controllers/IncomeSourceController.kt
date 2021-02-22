@@ -2,16 +2,12 @@ package com.marks0mmers.budgetcreator.controllers
 
 import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
 import com.marks0mmers.budgetcreator.services.IncomeSourceService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.*
 
 @Configuration
-class IncomeSourceController {
-
-    @Autowired lateinit var incomeSourceService: IncomeSourceService
-
+class IncomeSourceController(val incomeSourceService: IncomeSourceService) {
     @Bean
     fun incomeSourceRouter() = coRouter {
         "/api/budgets/{budgetId}".nest {

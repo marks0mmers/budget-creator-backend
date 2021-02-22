@@ -4,16 +4,12 @@ import com.marks0mmers.budgetcreator.models.views.BudgetSubmissionView
 import com.marks0mmers.budgetcreator.services.BudgetService
 import org.springframework.web.reactive.function.server.*
 import com.marks0mmers.budgetcreator.util.*
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 
 @Configuration
-class BudgetController {
-
-    @Autowired lateinit var budgetService: BudgetService
-
+class BudgetController(val budgetService: BudgetService) {
     @Bean
     fun budgetRouter() = coRouter {
         "/api".nest {

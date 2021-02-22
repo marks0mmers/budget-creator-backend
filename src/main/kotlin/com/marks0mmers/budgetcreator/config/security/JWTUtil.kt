@@ -12,7 +12,6 @@ import kotlin.collections.HashMap
 import org.springframework.stereotype.Component
 import java.time.Instant
 
-@Component
 @ConfigurationProperties("json-web-token.jjwt")
 class JWTUtil : Serializable {
     var secret: String = ""
