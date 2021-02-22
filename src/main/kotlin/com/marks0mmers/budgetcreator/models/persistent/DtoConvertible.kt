@@ -1,6 +1,5 @@
 package com.marks0mmers.budgetcreator.models.persistent
 
-enum class Role {
-    ROLE_USER,
-    ROLE_ADMIN
+interface DtoConvertible<T> {
+    fun toDto(): T
 }

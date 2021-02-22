@@ -1,5 +1,6 @@
 package com.marks0mmers.budgetcreator.services
 
+import com.marks0mmers.budgetcreator.models.dto.ExpenseCategoryDto
 import com.marks0mmers.budgetcreator.models.dto.ExpenseSubCategoryDto
 import com.marks0mmers.budgetcreator.models.persistent.ExpenseCategory
 import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
@@ -14,32 +15,34 @@ class ExpenseSubCategoryService(private val expenseCategoryRepository: ExpenseCa
     suspend fun addExpenseSubCategoryToExpenseCategory(
         expenseCategoryId: String,
         expenseSubCategory: ExpenseCategorySubmissionView
-    ): ExpenseCategory {
+    ): ExpenseCategoryDto {
         val expenseCategory = expenseCategoryRepository
             .findById(expenseCategoryId)
             .awaitFirstOrElse { fail("Cannot find Expense Category $expenseCategoryId", NOT_FOUND) }
         return expenseCategoryRepository
             .save(expenseCategory.addExpenseSubCategory(expenseSubCategory))
             .awaitFirstOrElse { fail("Failed to add Expense Sub Category") }
+            .toDto()
     }
 
     suspend fun removeExpenseSubCategoryFromExpenseCategory(
         expenseCategoryId: String,
         expenseSubCategoryId: String
-    ): ExpenseCategory {
+    ): ExpenseCategoryDto {
         val expenseCategory = expenseCategoryRepository
             .findById(expenseCategoryId)
             .awaitFirstOrElse { fail("Cannot find Expense Category $expenseCategoryId", NOT_FOUND) }
         return expenseCategoryRepository
             .save(expenseCategory.removeExpenseSubCategory(expenseSubCategoryId))
             .awaitFirstOrElse { fail("Failed to add Expense Sub Category") }
+            .toDto()
     }
 
     suspend fun updateExpenseSubCategory(
         expenseCategoryId: String,
         expenseSubCategoryId: String,
         expenseSubCategory: ExpenseCategorySubmissionView
-    ): ExpenseCategory {
+    ): ExpenseCategoryDto {
         val expenseCategory = expenseCategoryRepository
             .findById(expenseCategoryId)
             .awaitFirstOrElse { fail("Cannot find Expense Category $expenseCategoryId", NOT_FOUND) }
@@ -56,5 +59,6 @@ class ExpenseSubCategoryService(private val expenseCategoryRepository: ExpenseCa
                 )
             )
             .awaitFirstOrElse { fail("Failed to add Expense Sub Category") }
+            .toDto()
     }
 }

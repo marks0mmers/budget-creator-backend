@@ -1,6 +1,6 @@
 package com.marks0mmers.budgetcreator.models.dto
 
-import com.marks0mmers.budgetcreator.models.persistent.Role
+import com.marks0mmers.budgetcreator.models.constants.Role
 import com.marks0mmers.budgetcreator.models.persistent.User
 import com.marks0mmers.budgetcreator.util.fail
 

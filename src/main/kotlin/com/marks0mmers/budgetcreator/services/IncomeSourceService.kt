@@ -1,5 +1,6 @@
 package com.marks0mmers.budgetcreator.services
 
+import com.marks0mmers.budgetcreator.models.dto.BudgetDto
 import com.marks0mmers.budgetcreator.models.dto.IncomeSourceDto
 import com.marks0mmers.budgetcreator.models.persistent.Budget
 import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
@@ -11,29 +12,31 @@ import org.springframework.stereotype.Service
 
 @Service
 class IncomeSourceService(private val budgetRepository: BudgetRepository) {
-    suspend fun addIncomeSourceToBudget(budgetId: String, incomeSource: IncomeSourceSubmissionView): Budget {
+    suspend fun addIncomeSourceToBudget(budgetId: String, incomeSource: IncomeSourceSubmissionView): BudgetDto {
         val budget = budgetRepository
             .findById(budgetId)
             .awaitFirstOrElse { fail("Cannot find budget $budgetId", NOT_FOUND) }
         return budgetRepository
             .save(budget.addIncomeSource(incomeSource))
             .awaitFirstOrElse { fail("Failed to add income source") }
+            .toDto()
     }
 
-    suspend fun removeIncomeSourceFromBudget(budgetId: String, incomeSourceId: String): Budget {
+    suspend fun removeIncomeSourceFromBudget(budgetId: String, incomeSourceId: String): BudgetDto {
         val budget = budgetRepository
             .findById(budgetId)
             .awaitFirstOrElse { fail("Cannot find budget $budgetId", NOT_FOUND) }
         return budgetRepository
             .save(budget.removeIncomeSource(incomeSourceId))
             .awaitFirstOrElse { fail("Failed to remove income source") }
+            .toDto()
     }
 
     suspend fun updateIncomeSource(
         budgetId: String,
         incomeSourceId: String,
         incomeSource: IncomeSourceSubmissionView
-    ): Budget {
+    ): BudgetDto {
         val budget = budgetRepository
             .findById(budgetId)
             .awaitFirstOrElse { fail("Cannot find budget $budgetId", NOT_FOUND) }
@@ -48,5 +51,6 @@ class IncomeSourceService(private val budgetRepository: BudgetRepository) {
                 )
             )
             .awaitFirstOrElse { fail("Failed to update income source $incomeSourceId") }
+            .toDto()
     }
 }

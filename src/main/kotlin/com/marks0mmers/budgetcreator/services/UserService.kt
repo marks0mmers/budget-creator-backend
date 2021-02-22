@@ -2,7 +2,7 @@ package com.marks0mmers.budgetcreator.services
 
 import com.marks0mmers.budgetcreator.config.security.PasswordEncoder
 import com.marks0mmers.budgetcreator.models.dto.UserDto
-import com.marks0mmers.budgetcreator.models.persistent.Role
+import com.marks0mmers.budgetcreator.models.constants.Role
 import com.marks0mmers.budgetcreator.models.persistent.User
 import com.marks0mmers.budgetcreator.models.views.CreateUserView
 import com.marks0mmers.budgetcreator.repositories.UserRepository
@@ -27,7 +27,7 @@ class UserService(private val userRepository: UserRepository, private val passwo
         return userRepository
             .findByUsername(username)
             .awaitFirstOrElse { fail("Cannot find user $username", HttpStatus.NOT_FOUND) }
-            .let { UserDto(it) }
+            .toDto()
     }
 
     suspend fun createUser(user: CreateUserView): UserDto {
@@ -43,13 +43,13 @@ class UserService(private val userRepository: UserRepository, private val passwo
                 )
             )
             .awaitFirstOrElse { fail("Failed to save user") }
-            .let { UserDto(it) }
+            .toDto()
     }
 
     suspend fun getUserById(userId: String): UserDto {
         return userRepository
             .findById(userId)
             .awaitFirstOrElse { fail("User with id: $userId doesn't exist", HttpStatus.NOT_FOUND) }
-            .let { UserDto(it) }
+            .toDto()
     }
 }

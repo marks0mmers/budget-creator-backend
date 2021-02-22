@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class IncomeSource(
     val name: String,
     val amount: Double
-) {
+): DtoConvertible<IncomeSourceDto> {
     @Id var id: String? = null
 
     constructor(incomeSourceSubmission: IncomeSourceSubmissionView) : this(
@@ -23,4 +23,6 @@ data class IncomeSource(
     ) {
         id = incomeSourceDto.id
     }
+
+    override fun toDto(): IncomeSourceDto = IncomeSourceDto(this)
 }

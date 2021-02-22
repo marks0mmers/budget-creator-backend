@@ -13,7 +13,7 @@ data class Budget(
     val title: String,
     val primaryUserId: String,
     val incomeSources: List<IncomeSource>
-) {
+): DtoConvertible<BudgetDto> {
     @Id var id: String? = null
 
     constructor(budget: BudgetSubmissionView, primaryUserId: String) : this(
@@ -51,4 +51,6 @@ data class Budget(
             incomeSources = incomeSources.filter { it.id != incomeSourceId }
         )
     }
+
+    override fun toDto() = BudgetDto(this)
 }

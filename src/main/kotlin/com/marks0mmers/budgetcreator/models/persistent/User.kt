@@ -1,5 +1,7 @@
 package com.marks0mmers.budgetcreator.models.persistent
 
+import com.marks0mmers.budgetcreator.models.constants.Role
+import com.marks0mmers.budgetcreator.models.dto.UserDto
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -13,7 +15,7 @@ data class User(
         var lastName: String,
         var enabled: Boolean,
         var roles: List<Role>
-) : UserDetails {
+) : UserDetails, DtoConvertible<UserDto> {
     @Id var id: String? = null
     
     override fun isEnabled() = enabled
@@ -23,4 +25,5 @@ data class User(
     override fun isAccountNonExpired() = false
     override fun isAccountNonLocked() = false
     override fun getAuthorities() = roles.map { SimpleGrantedAuthority(it.name) }.toMutableList()
+    override fun toDto() = UserDto(this)
 }

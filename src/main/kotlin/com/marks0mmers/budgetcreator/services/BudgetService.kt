@@ -20,14 +20,14 @@ class BudgetService(private val budgetRepository: BudgetRepository, private val 
             .findAll()
             .asFlow()
             .filter { b -> userService.getUserByUsername(username).id == b.primaryUserId }
-            .map { BudgetDto(it) }
+            .map { it.toDto() }
     }
 
     private suspend fun getBudgetById(budgetId: String): BudgetDto {
         return budgetRepository
             .findById(budgetId)
             .awaitFirstOrElse { fail("Cannot find budget with ID: $budgetId") }
-            .let { BudgetDto(it) }
+            .toDto()
     }
 
     suspend fun createBudgetForUser(budget: BudgetSubmissionView, username: String): BudgetDto {
@@ -35,7 +35,7 @@ class BudgetService(private val budgetRepository: BudgetRepository, private val 
         return budgetRepository
             .insert(Budget(budget, user.id))
             .awaitFirstOrElse { fail("Failed to create user") }
-            .let { BudgetDto(it) }
+            .toDto()
     }
 
     suspend fun updateBudget(budgetId: String, budgetSubmission: BudgetSubmissionView): BudgetDto {
@@ -49,7 +49,7 @@ class BudgetService(private val budgetRepository: BudgetRepository, private val 
                 )
             )
             .awaitFirstOrElse { fail("Failed to update budget") }
-            .let { BudgetDto(it) }
+            .toDto()
     }
 
     suspend fun deleteBudget(budgetId: String): DeletedObjectView {

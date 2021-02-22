@@ -12,7 +12,7 @@ data class ExpenseCategory(
     val name: String,
     val description: String,
     val subCategories: List<ExpenseSubCategory>
-) {
+): DtoConvertible<ExpenseCategoryDto> {
     @Id var id: String? = null
 
     constructor(expenseCategorySubmission: ExpenseCategorySubmissionView) : this(
@@ -50,4 +50,6 @@ data class ExpenseCategory(
             subCategories = subCategories.filter { it.id != expenseSubCategoryId }
         )
     }
+
+    override fun toDto() = ExpenseCategoryDto(this)
 }

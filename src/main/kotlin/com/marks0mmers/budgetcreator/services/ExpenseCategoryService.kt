@@ -19,21 +19,21 @@ class ExpenseCategoryService(val expenseCategoryRepository: ExpenseCategoryRepos
         return expenseCategoryRepository
             .findAll()
             .asFlow()
-            .map { ExpenseCategoryDto(it) }
+            .map { it.toDto() }
     }
 
     suspend fun getExpenseCategoryById(expenseCategoryId: String): ExpenseCategoryDto {
         return expenseCategoryRepository
             .findById(expenseCategoryId)
             .awaitFirstOrElse { fail("Cannot find expense category with ID: $expenseCategoryId") }
-            .let { ExpenseCategoryDto(it) }
+            .toDto()
     }
 
     suspend fun createExpenseCategory(expenseCategory: ExpenseCategorySubmissionView): ExpenseCategoryDto {
         return expenseCategoryRepository
             .insert(ExpenseCategory(expenseCategory))
             .awaitFirstOrElse { fail("Failed to create Expense Category") }
-            .let { ExpenseCategoryDto(it) }
+            .toDto()
     }
 
     suspend fun updateExpenseCategory(
@@ -51,7 +51,7 @@ class ExpenseCategoryService(val expenseCategoryRepository: ExpenseCategoryRepos
                 )
             )
             .awaitFirstOrElse { fail("Failed to update Expense Category") }
-            .let { ExpenseCategoryDto(it) }
+            .toDto()
     }
 
     suspend fun deleteExpenseCategory(expenseCategoryId: String): DeletedObjectView {

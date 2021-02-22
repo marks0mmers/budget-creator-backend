@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class ExpenseSubCategory(
     val name: String,
     val description: String
-) {
+): DtoConvertible<ExpenseSubCategoryDto> {
     @Id var id: String? = null
 
     constructor(expenseCategorySubmission: ExpenseCategorySubmissionView) : this(
@@ -23,4 +23,6 @@ data class ExpenseSubCategory(
     ) {
         id = expenseSubCategoryDto.id
     }
+
+    override fun toDto() = ExpenseSubCategoryDto(this)
 }
