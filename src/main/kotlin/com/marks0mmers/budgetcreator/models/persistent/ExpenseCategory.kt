@@ -2,6 +2,7 @@ package com.marks0mmers.budgetcreator.models.persistent
 
 import com.marks0mmers.budgetcreator.models.dto.ExpenseCategoryDto
 import com.marks0mmers.budgetcreator.models.dto.ExpenseSubCategoryDto
+import com.marks0mmers.budgetcreator.models.types.DtoConvertible
 import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
 import com.marks0mmers.budgetcreator.util.fail
 import org.springframework.data.annotation.Id

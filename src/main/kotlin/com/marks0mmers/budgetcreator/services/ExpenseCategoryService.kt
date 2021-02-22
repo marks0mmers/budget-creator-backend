@@ -2,12 +2,12 @@ package com.marks0mmers.budgetcreator.services
 
 import com.marks0mmers.budgetcreator.models.dto.ExpenseCategoryDto
 import com.marks0mmers.budgetcreator.models.persistent.ExpenseCategory
+import com.marks0mmers.budgetcreator.models.types.toDtos
 import com.marks0mmers.budgetcreator.models.views.DeletedObjectView
 import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
 import com.marks0mmers.budgetcreator.repositories.ExpenseCategoryRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirstOrElse
 import org.springframework.stereotype.Service
@@ -19,7 +19,7 @@ class ExpenseCategoryService(val expenseCategoryRepository: ExpenseCategoryRepos
         return expenseCategoryRepository
             .findAll()
             .asFlow()
-            .map { it.toDto() }
+            .toDtos()
     }
 
     suspend fun getExpenseCategoryById(expenseCategoryId: String): ExpenseCategoryDto {

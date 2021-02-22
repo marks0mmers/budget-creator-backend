@@ -2,6 +2,7 @@ package com.marks0mmers.budgetcreator.models.persistent
 
 import com.marks0mmers.budgetcreator.models.constants.Role
 import com.marks0mmers.budgetcreator.models.dto.UserDto
+import com.marks0mmers.budgetcreator.models.types.DtoConvertible
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.authority.SimpleGrantedAuthority

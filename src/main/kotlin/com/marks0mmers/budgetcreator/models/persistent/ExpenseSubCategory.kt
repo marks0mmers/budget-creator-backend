@@ -1,6 +1,7 @@
 package com.marks0mmers.budgetcreator.models.persistent
 
 import com.marks0mmers.budgetcreator.models.dto.ExpenseSubCategoryDto
+import com.marks0mmers.budgetcreator.models.types.DtoConvertible
 import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
