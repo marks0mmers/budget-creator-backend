@@ -1,8 +1,8 @@
 package com.marks0mmers.budgetcreator.config.security
 
 import com.marks0mmers.budgetcreator.util.corsConfiguration
+import com.marks0mmers.budgetcreator.util.getBearerAuth
 import org.springframework.context.annotation.Bean
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.config.web.server.invoke
-import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler
@@ -24,49 +23,39 @@ import reactor.kotlin.core.publisher.toMono
 @EnableReactiveMethodSecurity
 class WebSecurityConfig(val authenticationManager: AuthenticationManager) {
     @Bean
-    fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
-        val authenticationWebFilter = AuthenticationWebFilter(authenticationManager).apply {
+    fun securityWebFilterChain(http: ServerHttpSecurity) = http {
+        addFilterAt(AuthenticationWebFilter(authenticationManager).apply {
             setServerAuthenticationConverter { swe ->
-                val authHeader = swe?.request?.headers?.getFirst(HttpHeaders.AUTHORIZATION) ?: ""
-                if (authHeader.startsWith("Bearer ")) {
-                    val authToken = authHeader.substring(7)
-                    return@setServerAuthenticationConverter UsernamePasswordAuthenticationToken(
-                        authToken,
-                        authToken
-                    ).toMono()
-                }
-                return@setServerAuthenticationConverter Mono.empty()
+                swe?.request?.headers?.getBearerAuth()?.let { authToken ->
+                    UsernamePasswordAuthenticationToken(authToken, authToken).toMono()
+                } ?: Mono.empty()
+            }
+        }, SecurityWebFiltersOrder.AUTHENTICATION)
+        csrf { disable() }
+        formLogin { disable() }
+        httpBasic { disable() }
+        authorizeExchange {
+            authorize(pathMatchers(HttpMethod.OPTIONS, "/**"), permitAll)
+            authorize(pathMatchers("/api/users", "/api/users/login"), permitAll)
+            authorize()
+        }
+        cors {
+            configurationSource = corsConfiguration {
+                addAllowedOriginPattern("/**")
+                addAllowedOriginPattern("*")
+                addAllowedMethod("*")
+                addAllowedHeader("*")
             }
         }
-
-        return http {
-            addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-            csrf { disable() }
-            formLogin { disable() }
-            httpBasic { disable() }
-            authorizeExchange {
-                authorize(pathMatchers(HttpMethod.OPTIONS, "/**"), permitAll)
-                authorize(pathMatchers("/api/users", "/api/users/login"), permitAll)
-                authorize()
-            }
-            cors {
-                configurationSource = corsConfiguration {
-                    addAllowedOriginPattern("/**")
-                    addAllowedOriginPattern("*")
-                    addAllowedMethod("*")
-                    addAllowedHeader("*")
+        exceptionHandling {
+            authenticationEntryPoint = ServerAuthenticationEntryPoint { swe, _ ->
+                fromRunnable {
+                    swe.response.statusCode = HttpStatus.UNAUTHORIZED
                 }
             }
-            exceptionHandling {
-                authenticationEntryPoint = ServerAuthenticationEntryPoint { swe, _ ->
-                    fromRunnable {
-                        swe.response.statusCode = HttpStatus.UNAUTHORIZED
-                    }
-                }
-                accessDeniedHandler = ServerAccessDeniedHandler { swe, _ ->
-                    fromRunnable {
-                        swe.response.statusCode = HttpStatus.FORBIDDEN
-                    }
+            accessDeniedHandler = ServerAccessDeniedHandler { swe, _ ->
+                fromRunnable {
+                    swe.response.statusCode = HttpStatus.FORBIDDEN
                 }
             }
         }

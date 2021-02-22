@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toMono
 
 @Component
 class AuthenticationManager(private val jwtUtil: JWTUtil) : ReactiveAuthenticationManager {
@@ -17,13 +18,11 @@ class AuthenticationManager(private val jwtUtil: JWTUtil) : ReactiveAuthenticati
             val claims = jwtUtil.getAllClaimsFromToken(authToken)
             val rolesList = claims?.get("role", List::class.java)
             val roles = rolesList?.map { Role.valueOf(it.toString()) }
-            Mono.just(
-                UsernamePasswordAuthenticationToken(
-                    username,
-                    null,
-                    roles?.map { SimpleGrantedAuthority(it.name) }
-                )
-            )
+            UsernamePasswordAuthenticationToken(
+                username,
+                null,
+                roles?.map { SimpleGrantedAuthority(it.name) }
+            ).toMono()
         } else {
             Mono.empty()
         }
