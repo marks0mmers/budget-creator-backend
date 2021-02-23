@@ -2,6 +2,7 @@ package com.marks0mmers.budgetcreator.config.security
 
 import com.marks0mmers.budgetcreator.util.corsConfiguration
 import com.marks0mmers.budgetcreator.util.getBearerAuth
+import com.marks0mmers.budgetcreator.util.mono
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -15,8 +16,7 @@ import org.springframework.security.web.server.ServerAuthenticationEntryPoint
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers
-import reactor.core.publisher.Mono
-import reactor.core.publisher.Mono.fromRunnable
+import reactor.core.publisher.Mono.empty
 import reactor.kotlin.core.publisher.toMono
 
 @EnableWebFluxSecurity
@@ -28,7 +28,7 @@ class WebSecurityConfig(val authenticationManager: AuthenticationManager) {
             setServerAuthenticationConverter { swe ->
                 swe?.request?.headers?.getBearerAuth()?.let { authToken ->
                     UsernamePasswordAuthenticationToken(authToken, authToken).toMono()
-                } ?: Mono.empty()
+                } ?: empty()
             }
         }, SecurityWebFiltersOrder.AUTHENTICATION)
         csrf { disable() }
@@ -49,14 +49,10 @@ class WebSecurityConfig(val authenticationManager: AuthenticationManager) {
         }
         exceptionHandling {
             authenticationEntryPoint = ServerAuthenticationEntryPoint { swe, _ ->
-                fromRunnable {
-                    swe.response.statusCode = HttpStatus.UNAUTHORIZED
-                }
+                mono { swe.response.statusCode = HttpStatus.UNAUTHORIZED }
             }
             accessDeniedHandler = ServerAccessDeniedHandler { swe, _ ->
-                fromRunnable {
-                    swe.response.statusCode = HttpStatus.FORBIDDEN
-                }
+                mono { swe.response.statusCode = HttpStatus.FORBIDDEN }
             }
         }
     }
