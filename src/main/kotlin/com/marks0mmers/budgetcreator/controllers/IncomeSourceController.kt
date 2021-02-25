@@ -2,6 +2,7 @@ package com.marks0mmers.budgetcreator.controllers
 
 import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
 import com.marks0mmers.budgetcreator.services.IncomeSourceService
+import com.marks0mmers.budgetcreator.util.POST
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.*
@@ -10,8 +11,8 @@ import org.springframework.web.reactive.function.server.*
 class IncomeSourceController(val incomeSourceService: IncomeSourceService) {
     @Bean
     fun incomeSourceRouter() = coRouter {
-        "/api/budgets/{budgetId}".nest {
-            POST("/incomeSource") { req ->
+        "/api/budgets/{budgetId}/incomeSource".nest {
+            POST { req ->
                 val body = req.awaitBody<IncomeSourceSubmissionView>()
                 val budgetId = req.pathVariable("budgetId")
                 val addedIncomeSource = incomeSourceService.addIncomeSourceToBudget(budgetId, body)
@@ -19,7 +20,7 @@ class IncomeSourceController(val incomeSourceService: IncomeSourceService) {
                     .bodyValueAndAwait(addedIncomeSource)
             }
 
-            PUT("/incomeSource/{incomeSourceId}") { req ->
+            PUT("/{incomeSourceId}") { req ->
                 val body = req.awaitBody<IncomeSourceSubmissionView>()
                 val budgetId = req.pathVariable("budgetId")
                 val incomeSourceId = req.pathVariable("incomeSourceId")
@@ -28,7 +29,7 @@ class IncomeSourceController(val incomeSourceService: IncomeSourceService) {
                     .bodyValueAndAwait(updatedIncomeSource)
             }
 
-            DELETE("/incomeSource/{incomeSourceId}") { req ->
+            DELETE("/{incomeSourceId}") { req ->
                 val budgetId = req.pathVariable("budgetId")
                 val incomeSourceId = req.pathVariable("incomeSourceId")
                 val removedIncomeSource = incomeSourceService.removeIncomeSourceFromBudget(budgetId, incomeSourceId)

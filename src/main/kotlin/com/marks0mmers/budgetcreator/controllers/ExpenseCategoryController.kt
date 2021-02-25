@@ -2,6 +2,7 @@ package com.marks0mmers.budgetcreator.controllers
 
 import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
 import com.marks0mmers.budgetcreator.services.ExpenseCategoryService
+import com.marks0mmers.budgetcreator.util.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.*
@@ -10,21 +11,21 @@ import org.springframework.web.reactive.function.server.*
 class ExpenseCategoryController(val expenseCategoryService: ExpenseCategoryService) {
     @Bean
     fun expenseCategoryRouter() = coRouter {
-        "/api".nest {
-            GET("/expenseCategories") {
+        "/api/expenseCategories".nest {
+            GET {
                 val expenseCategories = expenseCategoryService.getExpenseCategories()
                 ok().json()
                     .bodyAndAwait(expenseCategories)
             }
 
-            POST("/expenseCategories") { req ->
+            POST { req ->
                 val body = req.awaitBody<ExpenseCategorySubmissionView>()
                 val createdExpenseCategory = expenseCategoryService.createExpenseCategory(body)
                 ok().json()
                     .bodyValueAndAwait(createdExpenseCategory)
             }
 
-            PUT("/expenseCategories/{expenseCategoryId}") { req ->
+            PUT("/{expenseCategoryId}") { req ->
                 val expenseCategoryId = req.pathVariable("expenseCategoryId")
                 val body = req.awaitBody<ExpenseCategorySubmissionView>()
                 val updatedExpenseCategory = expenseCategoryService.updateExpenseCategory(expenseCategoryId, body)
@@ -32,7 +33,7 @@ class ExpenseCategoryController(val expenseCategoryService: ExpenseCategoryServi
                     .bodyValueAndAwait(updatedExpenseCategory)
             }
 
-            DELETE("/expenseCategories/{expenseCategoryId}") { req ->
+            DELETE("/{expenseCategoryId}") { req ->
                 val expenseCategoryId = req.pathVariable("expenseCategoryId")
                 val deletedExpenseCategory = expenseCategoryService.deleteExpenseCategory(expenseCategoryId)
                 ok().json()

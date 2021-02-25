@@ -2,6 +2,7 @@ package com.marks0mmers.budgetcreator.controllers
 
 import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
 import com.marks0mmers.budgetcreator.services.ExpenseSubCategoryService
+import com.marks0mmers.budgetcreator.util.POST
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.awaitBody
@@ -13,8 +14,8 @@ import org.springframework.web.reactive.function.server.json
 class ExpenseSubCategoryController(val expenseSubCategoryService: ExpenseSubCategoryService) {
     @Bean
     fun expenseSubCategoryRouter() = coRouter {
-        "/api/expenseCategories/{expenseCategoryId}".nest {
-            POST("/expenseSubCategories") { req ->
+        "/api/expenseCategories/{expenseCategoryId}/expenseSubCategories".nest {
+            POST { req ->
                 val body = req.awaitBody<ExpenseCategorySubmissionView>()
                 val expenseCategoryId = req.pathVariable("expenseCategoryId")
                 val createdExpenseCategory = expenseSubCategoryService.addExpenseSubCategoryToExpenseCategory(
@@ -25,7 +26,7 @@ class ExpenseSubCategoryController(val expenseSubCategoryService: ExpenseSubCate
                     .bodyValueAndAwait(createdExpenseCategory)
             }
 
-            PUT("/expenseSubCategories/{expenseSubCategoryId}") { req ->
+            PUT("/{expenseSubCategoryId}") { req ->
                 val body = req.awaitBody<ExpenseCategorySubmissionView>()
                 val expenseCategoryId = req.pathVariable("expenseCategoryId")
                 val expenseSubCategoryId  = req.pathVariable("expenseSubCategoryId")
@@ -38,7 +39,7 @@ class ExpenseSubCategoryController(val expenseSubCategoryService: ExpenseSubCate
                     .bodyValueAndAwait(updatedExpenseSubCategory)
             }
 
-            DELETE("/expenseSubCategories/{expenseSubCategoryId}") { req ->
+            DELETE("/{expenseSubCategoryId}") { req ->
                 val expenseCategoryId = req.pathVariable("expenseCategoryId")
                 val expenseSubCategoryId  = req.pathVariable("expenseSubCategoryId")
                 val deletedExpenseSubCategory = expenseSubCategoryService.removeExpenseSubCategoryFromExpenseCategory(

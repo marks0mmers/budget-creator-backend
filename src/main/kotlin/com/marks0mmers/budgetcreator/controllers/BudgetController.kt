@@ -12,15 +12,15 @@ import org.springframework.http.HttpStatus.UNAUTHORIZED
 class BudgetController(val budgetService: BudgetService) {
     @Bean
     fun budgetRouter() = coRouter {
-        "/api".nest {
-            GET("/budgets") { req ->
+        "/api/budgets".nest {
+            GET { req ->
                 val principal = req.awaitPrincipal() ?: fail("Cannot get user from request", UNAUTHORIZED)
                 val budgets = budgetService.getAllBudgetItemsForUser(principal.name)
                 ok().json()
                     .bodyAndAwait(budgets)
             }
 
-            POST("/budgets") { req ->
+            POST { req ->
                 val principal = req.awaitPrincipal() ?: fail("Cannot get user from request", UNAUTHORIZED)
                 val body = req.awaitBody<BudgetSubmissionView>()
                 val createdBudget = budgetService.createBudgetForUser(body, principal.name)
@@ -28,7 +28,7 @@ class BudgetController(val budgetService: BudgetService) {
                     .bodyValueAndAwait(createdBudget)
             }
 
-            PUT("/budgets/{budgetId}") { req ->
+            PUT("/{budgetId}") { req ->
                 val body = req.awaitBody<BudgetSubmissionView>()
                 val budgetId = req.pathVariable("budgetId")
                 val updatedBudget = budgetService.updateBudget(budgetId, body)
@@ -36,7 +36,7 @@ class BudgetController(val budgetService: BudgetService) {
                     .bodyValueAndAwait(updatedBudget)
             }
 
-            DELETE("/budgets/{budgetId}") { req ->
+            DELETE("/{budgetId}") { req ->
                 val budgetId = req.pathVariable("budgetId")
                 val deletedBudget = budgetService.deleteBudget(budgetId)
                 ok().json()

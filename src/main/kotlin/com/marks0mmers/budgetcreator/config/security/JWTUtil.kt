@@ -15,8 +15,8 @@ import java.time.Instant
 @Component
 @ConfigurationProperties("json-web-token.jjwt")
 class JWTUtil : Serializable {
-    private var secret: String = ""
-    private var expirationTime: Long = 0
+    var secret: String = ""
+    var expiration: Long = 0
 
     fun getAllClaimsFromToken(token: String): Claims? {
         val encodedString = Base64.getEncoder().encodeToString(secret.toByteArray())
@@ -40,7 +40,7 @@ class JWTUtil : Serializable {
     }
 
     private fun isTokenExpired(token: String): Boolean {
-        return getExpirationDateFromToken(token)?.isBefore(Instant.now()) ?: true
+        return getExpirationDateFromToken(token)?.isAfter(Instant.now()) ?: true
     }
 
     fun generateToken(user: User): String {
@@ -61,7 +61,7 @@ class JWTUtil : Serializable {
 
     private fun doGenerateToken(claims: Map<String, Any>, username: String): String {
         val createdDate = Instant.now()
-        val expirationDate = createdDate.plusMillis(expirationTime * 1000)
+        val expirationDate = createdDate.plusMillis(expiration * 1000)
         return Jwts.builder()
             .setClaims(claims)
             .setSubject(username)

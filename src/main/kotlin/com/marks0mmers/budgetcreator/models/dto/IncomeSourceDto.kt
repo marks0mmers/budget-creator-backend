@@ -9,7 +9,7 @@ data class IncomeSourceDto(
     val amount: Double
 ) {
     constructor(incomeSource: IncomeSource) : this(
-        incomeSource.id ?: fail("Income Source Id is null"),
+        incomeSource.id,
         incomeSource.name,
         incomeSource.amount
     )

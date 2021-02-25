@@ -9,7 +9,7 @@ data class ExpenseSubCategoryDto(
     val description: String
 ) {
     constructor(expenseSubCategory: ExpenseSubCategory) : this(
-        expenseSubCategory.id ?: fail("Expense Sub Category ID is null"),
+        expenseSubCategory.id,
         expenseSubCategory.name,
         expenseSubCategory.description
     )
