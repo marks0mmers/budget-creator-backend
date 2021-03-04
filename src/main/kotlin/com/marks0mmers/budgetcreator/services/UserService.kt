@@ -8,11 +8,11 @@ import com.marks0mmers.budgetcreator.repositories.UserRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.reactive.awaitFirstOrElse
 import org.springframework.http.HttpStatus
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(private val userRepository: UserRepository, private val passwordEncoder: BCryptPasswordEncoder) {
+class UserService(private val userRepository: UserRepository, private val passwordEncoder: PasswordEncoder) {
     suspend fun login(username: String, password: String): User {
         val user = userRepository
             .findByUsername(username)

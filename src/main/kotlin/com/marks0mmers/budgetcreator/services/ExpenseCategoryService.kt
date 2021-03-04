@@ -9,7 +9,9 @@ import com.marks0mmers.budgetcreator.repositories.ExpenseCategoryRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrElse
+import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -31,7 +33,7 @@ class ExpenseCategoryService(val expenseCategoryRepository: ExpenseCategoryRepos
 
     suspend fun createExpenseCategory(expenseCategory: ExpenseCategorySubmissionView): ExpenseCategoryDto {
         return expenseCategoryRepository
-            .insert(ExpenseCategory(expenseCategory))
+            .save(ExpenseCategory(expenseCategory))
             .awaitFirstOrElse { fail("Failed to create Expense Category") }
             .toDto()
     }
@@ -57,7 +59,7 @@ class ExpenseCategoryService(val expenseCategoryRepository: ExpenseCategoryRepos
     suspend fun deleteExpenseCategory(expenseCategoryId: String): DeletedObjectView {
         expenseCategoryRepository
             .deleteById(expenseCategoryId)
-            .awaitFirstOrElse { fail("Failed to delete Expense Category") }
+            .awaitFirstOrNull()
         return DeletedObjectView(expenseCategoryId)
     }
 }

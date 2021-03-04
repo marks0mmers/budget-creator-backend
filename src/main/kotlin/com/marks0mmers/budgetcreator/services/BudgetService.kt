@@ -9,8 +9,7 @@ import com.marks0mmers.budgetcreator.util.fail
 import com.marks0mmers.budgetcreator.util.toDtos
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.reactive.asFlow
-import kotlinx.coroutines.reactive.awaitFirstOrElse
+import kotlinx.coroutines.reactive.*
 import org.springframework.stereotype.Service
 
 @Service
@@ -33,8 +32,8 @@ class BudgetService(private val budgetRepository: BudgetRepository, private val 
     suspend fun createBudgetForUser(budget: BudgetSubmissionView, username: String): BudgetDto {
         val user = userService.getUserByUsername(username)
         return budgetRepository
-            .insert(Budget(budget, user.id))
-            .awaitFirstOrElse { fail("Failed to create user") }
+            .save(Budget(budget, user.id))
+            .awaitFirstOrElse { fail("Failed to create budget") }
             .toDto()
     }
 
@@ -55,7 +54,7 @@ class BudgetService(private val budgetRepository: BudgetRepository, private val 
     suspend fun deleteBudget(budgetId: String): DeletedObjectView {
         budgetRepository
             .deleteById(budgetId)
-            .awaitFirstOrElse { fail("Failed to delete budget") }
+            .awaitFirstOrNull()
         return DeletedObjectView(budgetId)
     }
 }

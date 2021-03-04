@@ -16,7 +16,7 @@ class UserController(val userService: UserService, val jwtUtil: JWTUtil) {
     @Bean
     fun userRouter() = coRouter {
         "/api/users".nest {
-            GET { req ->
+            GET("/current") { req ->
                 val principal = req.awaitPrincipal() ?: fail("Cannot get Principal")
                 val user = userService.getUserByUsername(principal.name)
                 ok().json()
