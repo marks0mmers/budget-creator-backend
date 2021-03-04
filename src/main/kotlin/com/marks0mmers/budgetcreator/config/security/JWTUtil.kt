@@ -35,14 +35,6 @@ class JWTUtil : Serializable {
         return getAllClaimsFromToken(token)?.subject
     }
 
-    private fun getExpirationDateFromToken(token: String): Instant? {
-        return getAllClaimsFromToken(token)?.expiration?.toInstant()
-    }
-
-    private fun isTokenExpired(token: String): Boolean {
-        return getExpirationDateFromToken(token)?.isAfter(Instant.now()) ?: true
-    }
-
     fun generateToken(user: User): String {
         val claims = HashMap<String, Any>()
         claims["role"] = user.roles
@@ -69,5 +61,13 @@ class JWTUtil : Serializable {
             .setExpiration(Date.from(expirationDate))
             .signWith(SignatureAlgorithm.HS512, Base64.getEncoder().encodeToString(secret.toByteArray()))
             .compact()
+    }
+
+    private fun getExpirationDateFromToken(token: String): Instant? {
+        return getAllClaimsFromToken(token)?.expiration?.toInstant()
+    }
+
+    private fun isTokenExpired(token: String): Boolean {
+        return getExpirationDateFromToken(token)?.isAfter(Instant.now()) ?: true
     }
 }

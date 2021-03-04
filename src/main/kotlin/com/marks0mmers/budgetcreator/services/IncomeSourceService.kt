@@ -2,7 +2,6 @@ package com.marks0mmers.budgetcreator.services
 
 import com.marks0mmers.budgetcreator.models.dto.BudgetDto
 import com.marks0mmers.budgetcreator.models.dto.IncomeSourceDto
-import com.marks0mmers.budgetcreator.models.persistent.Budget
 import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
 import com.marks0mmers.budgetcreator.repositories.BudgetRepository
 import com.marks0mmers.budgetcreator.util.fail

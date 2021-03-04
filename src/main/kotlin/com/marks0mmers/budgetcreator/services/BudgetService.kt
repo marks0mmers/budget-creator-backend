@@ -2,11 +2,11 @@ package com.marks0mmers.budgetcreator.services
 
 import com.marks0mmers.budgetcreator.models.dto.BudgetDto
 import com.marks0mmers.budgetcreator.models.persistent.Budget
-import com.marks0mmers.budgetcreator.models.types.toDtos
 import com.marks0mmers.budgetcreator.models.views.BudgetSubmissionView
 import com.marks0mmers.budgetcreator.models.views.DeletedObjectView
 import com.marks0mmers.budgetcreator.repositories.BudgetRepository
 import com.marks0mmers.budgetcreator.util.fail
+import com.marks0mmers.budgetcreator.util.toDtos
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.reactive.asFlow

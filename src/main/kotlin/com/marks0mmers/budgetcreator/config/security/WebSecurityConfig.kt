@@ -1,7 +1,7 @@
 package com.marks0mmers.budgetcreator.config.security
 
+import com.marks0mmers.budgetcreator.util.bearerAuth
 import com.marks0mmers.budgetcreator.util.corsConfiguration
-import com.marks0mmers.budgetcreator.util.getBearerAuth
 import com.marks0mmers.budgetcreator.util.mono
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
@@ -26,7 +26,7 @@ class WebSecurityConfig(val authenticationManager: AuthenticationManager) {
     fun securityWebFilterChain(http: ServerHttpSecurity) = http {
         addFilterAt(AuthenticationWebFilter(authenticationManager).apply {
             setServerAuthenticationConverter { swe ->
-                swe?.request?.headers?.getBearerAuth()?.let { authToken ->
+                swe?.request?.headers?.bearerAuth?.let { authToken ->
                     UsernamePasswordAuthenticationToken(authToken, authToken).toMono()
                 } ?: empty()
             }

@@ -1,6 +1,5 @@
 package com.marks0mmers.budgetcreator.services
 
-import com.marks0mmers.budgetcreator.config.security.PasswordEncoder
 import com.marks0mmers.budgetcreator.models.dto.UserDto
 import com.marks0mmers.budgetcreator.models.constants.Role
 import com.marks0mmers.budgetcreator.models.persistent.User
@@ -9,10 +8,11 @@ import com.marks0mmers.budgetcreator.repositories.UserRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.reactive.awaitFirstOrElse
 import org.springframework.http.HttpStatus
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(private val userRepository: UserRepository, private val passwordEncoder: PasswordEncoder) {
+class UserService(private val userRepository: UserRepository, private val passwordEncoder: BCryptPasswordEncoder) {
     suspend fun login(username: String, password: String): User {
         val user = userRepository
             .findByUsername(username)

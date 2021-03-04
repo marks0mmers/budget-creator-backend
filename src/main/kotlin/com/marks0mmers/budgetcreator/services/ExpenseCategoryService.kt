@@ -2,7 +2,7 @@ package com.marks0mmers.budgetcreator.services
 
 import com.marks0mmers.budgetcreator.models.dto.ExpenseCategoryDto
 import com.marks0mmers.budgetcreator.models.persistent.ExpenseCategory
-import com.marks0mmers.budgetcreator.models.types.toDtos
+import com.marks0mmers.budgetcreator.util.toDtos
 import com.marks0mmers.budgetcreator.models.views.DeletedObjectView
 import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
 import com.marks0mmers.budgetcreator.repositories.ExpenseCategoryRepository
