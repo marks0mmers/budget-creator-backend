@@ -1,6 +1,8 @@
 package com.marks0mmers.budgetcreator.config.security
 
 import com.marks0mmers.budgetcreator.models.constants.Role
+import com.marks0mmers.budgetcreator.util.BudgetCreatorException
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -22,6 +24,6 @@ class AuthenticationManager(private val jwtUtil: JWTUtil) : ReactiveAuthenticati
                     ?.map { SimpleGrantedAuthority(it.name) }
                 UsernamePasswordAuthenticationToken(username, null, roles).toMono()
             } else null
-        } ?: Mono.empty()
+        } ?: Mono.error(BudgetCreatorException("JWT Token Invalid", HttpStatus.UNAUTHORIZED))
     }
 }

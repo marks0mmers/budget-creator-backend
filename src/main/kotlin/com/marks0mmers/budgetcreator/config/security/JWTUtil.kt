@@ -48,7 +48,7 @@ class JWTUtil : Serializable {
     }
 
     fun validateToken(token: String): Boolean {
-        return isTokenExpired(token)
+        return !isTokenExpired(token)
     }
 
     private fun doGenerateToken(claims: Map<String, Any>, username: String): String {
@@ -68,6 +68,6 @@ class JWTUtil : Serializable {
     }
 
     private fun isTokenExpired(token: String): Boolean {
-        return getExpirationDateFromToken(token)?.isAfter(Instant.now()) ?: true
+        return getExpirationDateFromToken(token)?.isBefore(Instant.now()) ?: true
     }
 }
