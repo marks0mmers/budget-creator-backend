@@ -19,41 +19,36 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 import reactor.core.publisher.Mono.empty
 import reactor.kotlin.core.publisher.toMono
 
-@EnableWebFluxSecurity
-@EnableReactiveMethodSecurity
-class WebSecurityConfig(val authenticationManager: AuthenticationManager) {
-    @Bean
-    fun securityWebFilterChain(http: ServerHttpSecurity) = http {
-        addFilterAt(AuthenticationWebFilter(authenticationManager).apply {
-            setServerAuthenticationConverter { swe ->
-                swe?.request?.headers?.bearerAuth?.let { authToken ->
-                    UsernamePasswordAuthenticationToken(authToken, authToken).toMono()
-                } ?: empty()
-            }
-        }, SecurityWebFiltersOrder.AUTHENTICATION)
-        csrf { disable() }
-        formLogin { disable() }
-        httpBasic { disable() }
-        authorizeExchange {
-            authorize(pathMatchers(HttpMethod.OPTIONS, "/**"), permitAll)
-            authorize(pathMatchers("/api/users", "/api/users/login"), permitAll)
-            authorize()
+fun securityWebFilterChain(authenticationManager: AuthenticationManager, http: ServerHttpSecurity) = http {
+    addFilterAt(AuthenticationWebFilter(authenticationManager).apply {
+        setServerAuthenticationConverter { swe ->
+            swe?.request?.headers?.bearerAuth?.let { authToken ->
+                UsernamePasswordAuthenticationToken(authToken, authToken).toMono()
+            } ?: empty()
         }
-        cors {
-            configurationSource = corsConfiguration {
-                addAllowedOriginPattern("/**")
-                addAllowedOriginPattern("*")
-                addAllowedMethod("*")
-                addAllowedHeader("*")
-            }
+    }, SecurityWebFiltersOrder.AUTHENTICATION)
+    csrf { disable() }
+    formLogin { disable() }
+    httpBasic { disable() }
+    authorizeExchange {
+        authorize(pathMatchers(HttpMethod.OPTIONS, "/**"), permitAll)
+        authorize(pathMatchers("/api/users", "/api/users/login"), permitAll)
+        authorize()
+    }
+    cors {
+        configurationSource = corsConfiguration {
+            addAllowedOriginPattern("/**")
+            addAllowedOriginPattern("*")
+            addAllowedMethod("*")
+            addAllowedHeader("*")
         }
-        exceptionHandling {
-            authenticationEntryPoint = ServerAuthenticationEntryPoint { swe, _ ->
-                mono { swe.response.statusCode = HttpStatus.UNAUTHORIZED }
-            }
-            accessDeniedHandler = ServerAccessDeniedHandler { swe, _ ->
-                mono { swe.response.statusCode = HttpStatus.FORBIDDEN }
-            }
+    }
+    exceptionHandling {
+        authenticationEntryPoint = ServerAuthenticationEntryPoint { swe, _ ->
+            mono { swe.response.statusCode = HttpStatus.UNAUTHORIZED }
+        }
+        accessDeniedHandler = ServerAccessDeniedHandler { swe, _ ->
+            mono { swe.response.statusCode = HttpStatus.FORBIDDEN }
         }
     }
 }

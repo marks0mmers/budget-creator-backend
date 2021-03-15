@@ -12,19 +12,25 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document
 data class Budget(
     val title: String,
+    val expenseCategoryId: String,
+    val expenseSubCategoryId: String,
     val primaryUserId: String,
-    val incomeSources: List<IncomeSource>
+    var incomeSources: List<IncomeSource>,
 ): DtoConvertible<BudgetDto> {
     @Id var id: String? = null
 
     constructor(budget: BudgetSubmissionView, primaryUserId: String) : this(
         budget.title,
+        budget.expenseCategoryId,
+        budget.expenseSubCategoryId,
         primaryUserId,
-        emptyList()
+        emptyList(),
     )
 
     constructor(budget: BudgetDto) : this(
         budget.title,
+        budget.expenseCategoryId,
+        budget.expenseSubCategoryId,
         budget.primaryUserId,
         budget.incomeSources.map { IncomeSource(it) }
     ) {
@@ -32,25 +38,22 @@ data class Budget(
     }
 
     fun addIncomeSource(incomeSource: IncomeSourceSubmissionView): Budget {
-        return copy(
-            incomeSources = listOf(*incomeSources.toTypedArray(), IncomeSource(incomeSource))
-        )
+        incomeSources = listOf(*incomeSources.toTypedArray(), IncomeSource(incomeSource))
+        return this
     }
 
     fun updateIncomeSource(incomeSource: IncomeSourceDto): Budget {
-        return copy(
-            incomeSources = listOf(
-                *incomeSources.filter { it.id != incomeSource.id }.toTypedArray(),
-                incomeSources.find { it.id == incomeSource.id }
-                    ?.let { IncomeSource(incomeSource) } ?: fail("Income Source not found")
-            )
+        incomeSources = listOf(
+            *incomeSources.filter { it.id != incomeSource.id }.toTypedArray(),
+            incomeSources.find { it.id == incomeSource.id }
+                ?.let { IncomeSource(incomeSource) } ?: fail("Income Source not found")
         )
+        return this
     }
 
     fun removeIncomeSource(incomeSourceId: String): Budget {
-        return copy(
-            incomeSources = incomeSources.filter { it.id != incomeSourceId }
-        )
+        incomeSources = incomeSources.filter { it.id != incomeSourceId }
+        return this
     }
 
     override fun toDto() = BudgetDto(this)

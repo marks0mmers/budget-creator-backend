@@ -4,8 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.marks0mmers.budgetcreator.util.BudgetCreatorException
 import io.jsonwebtoken.JwtException
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler
-import org.springframework.context.annotation.Configuration
-import org.springframework.core.annotation.Order
+import org.springframework.core.Ordered
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.http.MediaType.APPLICATION_JSON
@@ -14,9 +13,9 @@ import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.Mono
 
-@Configuration
-@Order(-2)
-class GlobalErrorHandler : ErrorWebExceptionHandler {
+class GlobalErrorHandler : ErrorWebExceptionHandler, Ordered {
+    override fun getOrder() = -2
+
     override fun handle(exchange: ServerWebExchange, ex: Throwable): Mono<Void> {
         val buffer = exchange.response.bufferFactory()
         val jsonEncoder = jacksonObjectMapper()

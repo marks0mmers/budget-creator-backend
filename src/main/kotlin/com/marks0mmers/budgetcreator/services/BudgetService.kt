@@ -10,15 +10,13 @@ import com.marks0mmers.budgetcreator.util.toDtos
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.reactive.*
-import org.springframework.stereotype.Service
 
-@Service
 class BudgetService(private val budgetRepository: BudgetRepository, private val userService: UserService) {
     fun getAllBudgetItemsForUser(username: String): Flow<BudgetDto> {
         return budgetRepository
             .findAll()
             .asFlow()
-            .filter { b -> userService.getUserByUsername(username).id == b.primaryUserId }
+            .filter { b -> b.primaryUserId == userService.getUserByUsername(username).id }
             .toDtos()
     }
 
@@ -43,7 +41,9 @@ class BudgetService(private val budgetRepository: BudgetRepository, private val 
             .save(
                 Budget(
                     budget.copy(
-                        title = budgetSubmission.title
+                        title = budgetSubmission.title,
+                        expenseCategoryId = budgetSubmission.expenseCategoryId,
+                        expenseSubCategoryId = budgetSubmission.expenseSubCategoryId
                     )
                 )
             )

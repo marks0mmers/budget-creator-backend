@@ -1,15 +1,12 @@
 package com.marks0mmers.budgetcreator.services
 
 import com.marks0mmers.budgetcreator.models.dto.BudgetDto
-import com.marks0mmers.budgetcreator.models.dto.IncomeSourceDto
 import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
 import com.marks0mmers.budgetcreator.repositories.BudgetRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.reactive.awaitFirstOrElse
 import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.stereotype.Service
 
-@Service
 class IncomeSourceService(private val budgetRepository: BudgetRepository) {
     suspend fun addIncomeSourceToBudget(budgetId: String, incomeSource: IncomeSourceSubmissionView): BudgetDto {
         val budget = budgetRepository
@@ -39,7 +36,9 @@ class IncomeSourceService(private val budgetRepository: BudgetRepository) {
         val budget = budgetRepository
             .findById(budgetId)
             .awaitFirstOrElse { fail("Cannot find budget $budgetId", NOT_FOUND) }
-        val incomeSourceDto = budget.incomeSources.first { it.id == incomeSourceId }.let { IncomeSourceDto(it) }
+        val incomeSourceDto = budget.incomeSources
+            .first { i -> i.id == incomeSourceId }
+            .toDto()
         return budgetRepository
             .save(
                 budget.updateIncomeSource(

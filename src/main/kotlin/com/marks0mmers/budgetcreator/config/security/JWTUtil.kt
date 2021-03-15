@@ -6,13 +6,11 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
 import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
 import java.time.Instant
 
-@Component
 @ConfigurationProperties("json-web-token.jjwt")
 class JWTUtil : Serializable {
     var secret: String = ""

@@ -1,15 +1,12 @@
 package com.marks0mmers.budgetcreator.services
 
 import com.marks0mmers.budgetcreator.models.dto.ExpenseCategoryDto
-import com.marks0mmers.budgetcreator.models.dto.ExpenseSubCategoryDto
 import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
 import com.marks0mmers.budgetcreator.repositories.ExpenseCategoryRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.reactive.awaitFirstOrElse
 import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.stereotype.Service
 
-@Service
 class ExpenseSubCategoryService(private val expenseCategoryRepository: ExpenseCategoryRepository) {
     suspend fun addExpenseSubCategoryToExpenseCategory(
         expenseCategoryId: String,
@@ -46,8 +43,8 @@ class ExpenseSubCategoryService(private val expenseCategoryRepository: ExpenseCa
             .findById(expenseCategoryId)
             .awaitFirstOrElse { fail("Cannot find Expense Category $expenseCategoryId", NOT_FOUND) }
         val expenseSubCategoryDto = expenseCategory.subCategories
-            .first { it.id == expenseSubCategoryId }
-            .let { ExpenseSubCategoryDto(it) }
+            .first { s -> s.id == expenseSubCategoryId }
+            .toDto()
         return expenseCategoryRepository
             .save(
                 expenseCategory.updateExpenseSubCategory(

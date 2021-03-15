@@ -9,13 +9,10 @@ import com.marks0mmers.budgetcreator.repositories.ExpenseCategoryRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
-import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrElse
 import kotlinx.coroutines.reactive.awaitFirstOrNull
-import org.springframework.stereotype.Service
 
-@Service
-class ExpenseCategoryService(val expenseCategoryRepository: ExpenseCategoryRepository) {
+class ExpenseCategoryService(private val expenseCategoryRepository: ExpenseCategoryRepository) {
 
     fun getExpenseCategories(): Flow<ExpenseCategoryDto> {
         return expenseCategoryRepository
@@ -24,7 +21,7 @@ class ExpenseCategoryService(val expenseCategoryRepository: ExpenseCategoryRepos
             .toDtos()
     }
 
-    suspend fun getExpenseCategoryById(expenseCategoryId: String): ExpenseCategoryDto {
+    private suspend fun getExpenseCategoryById(expenseCategoryId: String): ExpenseCategoryDto {
         return expenseCategoryRepository
             .findById(expenseCategoryId)
             .awaitFirstOrElse { fail("Cannot find expense category with ID: $expenseCategoryId") }
