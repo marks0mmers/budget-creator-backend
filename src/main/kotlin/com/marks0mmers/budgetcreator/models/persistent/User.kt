@@ -3,12 +3,9 @@ package com.marks0mmers.budgetcreator.models.persistent
 import com.marks0mmers.budgetcreator.models.constants.Role
 import com.marks0mmers.budgetcreator.models.dto.UserDto
 import com.marks0mmers.budgetcreator.models.types.DtoConvertible
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-@Document
 data class User(
         private var username: String,
         private var password: String,
@@ -17,7 +14,7 @@ data class User(
         var enabled: Boolean,
         var roles: List<Role>
 ) : UserDetails, DtoConvertible<UserDto> {
-    @Id var id: String? = null
+    var id: String? = null
     
     override fun isEnabled() = enabled
     override fun getUsername() = username

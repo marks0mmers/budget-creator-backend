@@ -16,7 +16,7 @@ class UserService(private val userRepository: UserRepository, private val passwo
             .findByUsername(username)
             .awaitFirstOrElse { fail("Cannot find user with username: $username") }
         return if (passwordEncoder.matches(password, user.password)) user else fail(
-            "Passwords don't match",
+            "Username doesn't exist or password is incorrect",
             HttpStatus.UNAUTHORIZED
         )
     }

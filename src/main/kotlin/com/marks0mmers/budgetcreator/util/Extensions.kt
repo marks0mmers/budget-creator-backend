@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.server.CoRouterFunctionDsl
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
+import java.time.Instant
 
 fun corsConfiguration(builder: CorsConfiguration.() -> Unit): CorsConfigurationSource {
     return CorsConfigurationSource {

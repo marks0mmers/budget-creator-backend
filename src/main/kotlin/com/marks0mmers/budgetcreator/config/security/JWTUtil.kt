@@ -1,20 +1,19 @@
 package com.marks0mmers.budgetcreator.config.security
 
+import com.marks0mmers.budgetcreator.models.constants.Role
 import com.marks0mmers.budgetcreator.models.dto.UserDto
 import com.marks0mmers.budgetcreator.models.persistent.User
+import com.marks0mmers.budgetcreator.util.PropertyValue
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.springframework.boot.context.properties.ConfigurationProperties
-import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
 import java.time.Instant
 
-@ConfigurationProperties("json-web-token.jjwt")
-class JWTUtil : Serializable {
-    var secret: String = ""
-    var expiration: Long = 0
+class JWTUtil {
+    private val secret: String by PropertyValue("json-web-token.jjwt") { it ?: "" }
+    private val expiration: Long by PropertyValue("json-web-token.jjwt") { it?.toLong() ?: 0 }
 
     fun getAllClaimsFromToken(token: String): Claims? {
         val encodedString = Base64.getEncoder().encodeToString(secret.toByteArray())
@@ -33,25 +32,18 @@ class JWTUtil : Serializable {
         return getAllClaimsFromToken(token)?.subject
     }
 
-    fun generateToken(user: User): String {
-        val claims = HashMap<String, Any>()
-        claims["role"] = user.roles
-        return doGenerateToken(claims, user.username)
-    }
-
-    fun generateToken(user: UserDto): String {
-        val claims = HashMap<String, Any>()
-        claims["role"] = user.roles
-        return doGenerateToken(claims, user.username)
-    }
-
     fun validateToken(token: String): Boolean {
         return !isTokenExpired(token)
     }
 
-    private fun doGenerateToken(claims: Map<String, Any>, username: String): String {
+    fun generateToken(user: User) = doGenerateToken(user.roles, user.username)
+
+    fun generateToken(user: UserDto) = doGenerateToken(user.roles, user.username)
+
+    private fun doGenerateToken(roles: List<Role>, username: String): String {
         val createdDate = Instant.now()
         val expirationDate = createdDate.plusMillis(expiration * 1000)
+        val claims = mutableMapOf<String, Any>("role" to roles)
         return Jwts.builder()
             .setClaims(claims)
             .setSubject(username)
@@ -66,6 +58,7 @@ class JWTUtil : Serializable {
     }
 
     private fun isTokenExpired(token: String): Boolean {
-        return getExpirationDateFromToken(token)?.isBefore(Instant.now()) ?: true
+        val expirationDate = getExpirationDateFromToken(token) ?: return true
+        return expirationDate < Instant.now()
     }
 }

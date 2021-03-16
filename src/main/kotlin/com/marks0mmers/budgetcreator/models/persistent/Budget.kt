@@ -6,10 +6,7 @@ import com.marks0mmers.budgetcreator.models.types.DtoConvertible
 import com.marks0mmers.budgetcreator.models.views.BudgetSubmissionView
 import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
 import com.marks0mmers.budgetcreator.util.fail
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
 
-@Document
 data class Budget(
     val title: String,
     val expenseCategoryId: String,
@@ -17,7 +14,7 @@ data class Budget(
     val primaryUserId: String,
     var incomeSources: List<IncomeSource>,
 ): DtoConvertible<BudgetDto> {
-    @Id var id: String? = null
+    var id: String? = null
 
     constructor(budget: BudgetSubmissionView, primaryUserId: String) : this(
         budget.title,
