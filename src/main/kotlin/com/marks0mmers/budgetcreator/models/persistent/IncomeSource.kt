@@ -2,26 +2,23 @@ package com.marks0mmers.budgetcreator.models.persistent
 
 import com.marks0mmers.budgetcreator.models.dto.IncomeSourceDto
 import com.marks0mmers.budgetcreator.models.types.DtoConvertible
-import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
-import org.bson.types.ObjectId
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
 
-data class IncomeSource(
-    val name: String,
-    val amount: Double
-): DtoConvertible<IncomeSourceDto> {
-    var id: String = ObjectId().toHexString()
+object IncomeSources : IntIdTable("income_sources") {
+    val name = varchar("name", 50)
+    val amount = double("amount")
+    val budgetId = reference("budget_id", Budgets)
+}
 
-    constructor(incomeSourceSubmission: IncomeSourceSubmissionView) : this(
-        incomeSourceSubmission.name,
-        incomeSourceSubmission.amount
-    )
+class IncomeSource(id: EntityID<Int>) : IntEntity(id), DtoConvertible<IncomeSourceDto> {
+    companion object : IntEntityClass<IncomeSource>(IncomeSources)
 
-    constructor(incomeSourceDto: IncomeSourceDto) : this(
-        incomeSourceDto.name,
-        incomeSourceDto.amount
-    ) {
-        id = incomeSourceDto.id
-    }
+    var name by IncomeSources.name
+    var amount by IncomeSources.amount
+    var budget by Budget referencedOn IncomeSources.budgetId
 
     override fun toDto(): IncomeSourceDto = IncomeSourceDto(this)
 }

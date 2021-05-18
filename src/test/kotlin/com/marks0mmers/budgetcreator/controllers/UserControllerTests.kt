@@ -1,10 +1,8 @@
 package com.marks0mmers.budgetcreator.controllers
 
-import com.marks0mmers.budgetcreator.AppBeansInitializer
 import com.marks0mmers.budgetcreator.config.security.JWTUtil
 import com.marks0mmers.budgetcreator.models.constants.Role
 import com.marks0mmers.budgetcreator.models.dto.UserDto
-import com.marks0mmers.budgetcreator.models.persistent.User
 import com.marks0mmers.budgetcreator.models.views.AuthRequestView
 import com.marks0mmers.budgetcreator.models.views.CreateUserView
 import com.marks0mmers.budgetcreator.services.UserService
@@ -21,31 +19,20 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @ExtendWith(SpringExtension::class)
-@ContextConfiguration(initializers = [AppBeansInitializer::class])
 @WebFluxTest
-@Import(JWTUtil::class)
+@Import(UserController::class, JWTUtil::class)
 @WithMockUser(username = "marks0mmers", roles = ["USER"])
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserControllerTests {
+internal class UserControllerTests {
     @MockBean lateinit var userService: UserService
     @Autowired lateinit var webClient: WebTestClient
 
-    private val user = User(
-        username = "marks0mmers",
-        password = "",
-        firstName = "Mark",
-        lastName = "Sommers",
-        enabled = true,
-        roles = listOf(Role.ROLE_USER)
-    )
-
     private val userDto = UserDto(
-        id = "UserID",
+        id = 1,
         username = "marks0mmers",
         firstName = "Mark",
         lastName = "Sommers",
@@ -60,7 +47,7 @@ class UserControllerTests {
 
     @Test
     fun `test logging in`(): Unit = runBlocking {
-        `when`(userService.login(user.username, "Truckin09")).thenReturn(user)
+        `when`(userService.login(userDto.username, "Truckin09")).thenReturn(userDto)
 
         webClient.post()
             .uri("/api/users/login")
@@ -95,7 +82,7 @@ class UserControllerTests {
 
     @Test
     fun `test getting current user`(): Unit = runBlocking {
-        `when`(userService.getUserByUsername(user.username)).thenReturn(userDto)
+        `when`(userService.getUserByUsername(userDto.username)).thenReturn(userDto)
 
         webClient.get()
             .uri("/api/users/current")
@@ -109,7 +96,7 @@ class UserControllerTests {
         `when`(userService.getUserById(userDto.id)).thenReturn(userDto)
 
         webClient.get()
-            .uri("/api/v2/users/${user.id}")
+            .uri("/api/users/${userDto.id}")
             .exchange()
             .expectStatus().isOk
             .expectBody(UserDto::class.java)

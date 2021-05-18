@@ -1,57 +1,24 @@
 package com.marks0mmers.budgetcreator.models.persistent
 
 import com.marks0mmers.budgetcreator.models.dto.BudgetDto
-import com.marks0mmers.budgetcreator.models.dto.IncomeSourceDto
 import com.marks0mmers.budgetcreator.models.types.DtoConvertible
-import com.marks0mmers.budgetcreator.models.views.BudgetSubmissionView
-import com.marks0mmers.budgetcreator.models.views.IncomeSourceSubmissionView
-import com.marks0mmers.budgetcreator.util.fail
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
 
-data class Budget(
-    val title: String,
-    val expenseCategoryId: String,
-    val expenseSubCategoryId: String,
-    val primaryUserId: String,
-    var incomeSources: List<IncomeSource>,
-): DtoConvertible<BudgetDto> {
-    var id: String? = null
+object Budgets : IntIdTable("budgets") {
+    val title = varchar("title", 100)
+    val primaryUserId = reference("primary_user_id", Users)
+}
 
-    constructor(budget: BudgetSubmissionView, primaryUserId: String) : this(
-        budget.title,
-        budget.expenseCategoryId,
-        budget.expenseSubCategoryId,
-        primaryUserId,
-        emptyList(),
-    )
+class Budget(id: EntityID<Int>) : IntEntity(id), DtoConvertible<BudgetDto> {
+    companion object : IntEntityClass<Budget>(Budgets)
 
-    constructor(budget: BudgetDto) : this(
-        budget.title,
-        budget.expenseCategoryId,
-        budget.expenseSubCategoryId,
-        budget.primaryUserId,
-        budget.incomeSources.map { IncomeSource(it) }
-    ) {
-        id = budget.id
-    }
-
-    fun addIncomeSource(incomeSource: IncomeSourceSubmissionView): Budget {
-        incomeSources = listOf(*incomeSources.toTypedArray(), IncomeSource(incomeSource))
-        return this
-    }
-
-    fun updateIncomeSource(incomeSource: IncomeSourceDto): Budget {
-        incomeSources = listOf(
-            *incomeSources.filter { it.id != incomeSource.id }.toTypedArray(),
-            incomeSources.find { it.id == incomeSource.id }
-                ?.let { IncomeSource(incomeSource) } ?: fail("Income Source not found")
-        )
-        return this
-    }
-
-    fun removeIncomeSource(incomeSourceId: String): Budget {
-        incomeSources = incomeSources.filter { it.id != incomeSourceId }
-        return this
-    }
+    var title by Budgets.title
+    var primaryUser by User referencedOn Budgets.primaryUserId
+    val incomeSources by IncomeSource referrersOn IncomeSources.budgetId
+    val expenseSources by ExpenseSource referrersOn ExpenseSources.budgetId
 
     override fun toDto() = BudgetDto(this)
 }

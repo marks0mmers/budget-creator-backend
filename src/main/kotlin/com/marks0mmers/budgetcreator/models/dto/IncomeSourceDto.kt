@@ -1,15 +1,14 @@
 package com.marks0mmers.budgetcreator.models.dto
 
 import com.marks0mmers.budgetcreator.models.persistent.IncomeSource
-import com.marks0mmers.budgetcreator.util.fail
 
 data class IncomeSourceDto(
-    val id: String,
+    val id: Int,
     val name: String,
     val amount: Double
 ) {
     constructor(incomeSource: IncomeSource) : this(
-        incomeSource.id,
+        incomeSource.id.value,
         incomeSource.name,
         incomeSource.amount
     )

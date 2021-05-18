@@ -5,11 +5,13 @@ import com.marks0mmers.budgetcreator.services.IncomeSourceService
 import com.marks0mmers.budgetcreator.util.POST
 import org.springframework.web.reactive.function.server.*
 
-fun incomeSourceRouter(incomeSourceService: IncomeSourceService) = coRouter {
+class IncomeSourceController(
+    incomeSourceService: IncomeSourceService
+) : RouterFunction<ServerResponse> by coRouter({
     "/api/budgets/{budgetId}/incomeSource".nest {
         POST { req ->
             val body = req.awaitBody<IncomeSourceSubmissionView>()
-            val budgetId = req.pathVariable("budgetId")
+            val budgetId = req.pathVariable("budgetId").toInt()
             val addedIncomeSource = incomeSourceService.addIncomeSourceToBudget(budgetId, body)
             ok().json()
                 .bodyValueAndAwait(addedIncomeSource)
@@ -17,19 +19,17 @@ fun incomeSourceRouter(incomeSourceService: IncomeSourceService) = coRouter {
 
         PUT("/{incomeSourceId}") { req ->
             val body = req.awaitBody<IncomeSourceSubmissionView>()
-            val budgetId = req.pathVariable("budgetId")
-            val incomeSourceId = req.pathVariable("incomeSourceId")
-            val updatedIncomeSource = incomeSourceService.updateIncomeSource(budgetId, incomeSourceId, body)
+            val incomeSourceId = req.pathVariable("incomeSourceId").toInt()
+            val updatedIncomeSource = incomeSourceService.updateIncomeSource(incomeSourceId, body)
             ok().json()
                 .bodyValueAndAwait(updatedIncomeSource)
         }
 
         DELETE("/{incomeSourceId}") { req ->
-            val budgetId = req.pathVariable("budgetId")
-            val incomeSourceId = req.pathVariable("incomeSourceId")
-            val removedIncomeSource = incomeSourceService.removeIncomeSourceFromBudget(budgetId, incomeSourceId)
+            val incomeSourceId = req.pathVariable("incomeSourceId").toInt()
+            val removedIncomeSource = incomeSourceService.removeIncomeSourceFromBudget(incomeSourceId)
             ok().json()
                 .bodyValueAndAwait(removedIncomeSource)
         }
     }
-}
+})

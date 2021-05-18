@@ -1,60 +1,30 @@
 package com.marks0mmers.budgetcreator.services
 
-import com.marks0mmers.budgetcreator.models.dto.ExpenseCategoryDto
+import com.marks0mmers.budgetcreator.models.dto.ExpenseSubCategoryDto
 import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
-import com.marks0mmers.budgetcreator.repositories.ExpenseCategoryRepository
+import com.marks0mmers.budgetcreator.repositories.ExpenseSubCategoryRepository
 import com.marks0mmers.budgetcreator.util.fail
-import kotlinx.coroutines.reactive.awaitFirstOrElse
 import org.springframework.http.HttpStatus.NOT_FOUND
 
-class ExpenseSubCategoryService(private val expenseCategoryRepository: ExpenseCategoryRepository) {
+class ExpenseSubCategoryService(private val expenseSubCategoryRepository: ExpenseSubCategoryRepository) {
     suspend fun addExpenseSubCategoryToExpenseCategory(
-        expenseCategoryId: String,
+        expenseCategoryId: Int,
         expenseSubCategory: ExpenseCategorySubmissionView
-    ): ExpenseCategoryDto {
-        val expenseCategory = expenseCategoryRepository
-            .findById(expenseCategoryId)
-            .awaitFirstOrElse { fail("Cannot find Expense Category $expenseCategoryId", NOT_FOUND) }
-        return expenseCategoryRepository
-            .save(expenseCategory.addExpenseSubCategory(expenseSubCategory))
-            .awaitFirstOrElse { fail("Failed to add Expense Sub Category") }
-            .toDto()
+    ): ExpenseSubCategoryDto {
+        return expenseSubCategoryRepository.create(expenseCategoryId, expenseSubCategory)
+            ?: fail("Cannot find Expense Category $expenseCategoryId", NOT_FOUND)
     }
 
-    suspend fun removeExpenseSubCategoryFromExpenseCategory(
-        expenseCategoryId: String,
-        expenseSubCategoryId: String
-    ): ExpenseCategoryDto {
-        val expenseCategory = expenseCategoryRepository
-            .findById(expenseCategoryId)
-            .awaitFirstOrElse { fail("Cannot find Expense Category $expenseCategoryId", NOT_FOUND) }
-        return expenseCategoryRepository
-            .save(expenseCategory.removeExpenseSubCategory(expenseSubCategoryId))
-            .awaitFirstOrElse { fail("Failed to add Expense Sub Category") }
-            .toDto()
+    suspend fun removeExpenseSubCategoryFromExpenseCategory(expenseSubCategoryId: Int): ExpenseSubCategoryDto {
+        return expenseSubCategoryRepository.delete(expenseSubCategoryId)
+            ?: fail("Cannot find Expense Sub-Category $expenseSubCategoryId", NOT_FOUND)
     }
 
     suspend fun updateExpenseSubCategory(
-        expenseCategoryId: String,
-        expenseSubCategoryId: String,
+        expenseSubCategoryId: Int,
         expenseSubCategory: ExpenseCategorySubmissionView
-    ): ExpenseCategoryDto {
-        val expenseCategory = expenseCategoryRepository
-            .findById(expenseCategoryId)
-            .awaitFirstOrElse { fail("Cannot find Expense Category $expenseCategoryId", NOT_FOUND) }
-        val expenseSubCategoryDto = expenseCategory.subCategories
-            .first { s -> s.id == expenseSubCategoryId }
-            .toDto()
-        return expenseCategoryRepository
-            .save(
-                expenseCategory.updateExpenseSubCategory(
-                    expenseSubCategoryDto.copy(
-                        name = expenseSubCategory.name,
-                        description = expenseSubCategory.description
-                    )
-                )
-            )
-            .awaitFirstOrElse { fail("Failed to add Expense Sub Category") }
-            .toDto()
+    ): ExpenseSubCategoryDto {
+        return expenseSubCategoryRepository.update(expenseSubCategoryId, expenseSubCategory)
+            ?: fail("Cannot find Expense Sub-Category $expenseSubCategoryId", NOT_FOUND)
     }
 }

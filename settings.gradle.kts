@@ -1,1 +1,1 @@
-rootProject.name = "budgetcreator"
+rootProject.name = "BudgetCreator"

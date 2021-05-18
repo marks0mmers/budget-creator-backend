@@ -2,26 +2,23 @@ package com.marks0mmers.budgetcreator.models.persistent
 
 import com.marks0mmers.budgetcreator.models.dto.ExpenseSubCategoryDto
 import com.marks0mmers.budgetcreator.models.types.DtoConvertible
-import com.marks0mmers.budgetcreator.models.views.ExpenseCategorySubmissionView
-import org.bson.types.ObjectId
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
 
-data class ExpenseSubCategory(
-    val name: String,
-    val description: String
-): DtoConvertible<ExpenseSubCategoryDto> {
-    var id: String = ObjectId().toHexString()
+object ExpenseSubCategories : IntIdTable("expense_sub_categories") {
+    val name = varchar("name", 50)
+    val description = varchar("description", 4000)
+    val expenseCategoryId = reference("expense_category_id", ExpenseCategories)
+}
 
-    constructor(expenseCategorySubmission: ExpenseCategorySubmissionView) : this(
-        expenseCategorySubmission.name,
-        expenseCategorySubmission.description
-    )
+class ExpenseSubCategory(id: EntityID<Int>) : IntEntity(id), DtoConvertible<ExpenseSubCategoryDto> {
+    companion object : IntEntityClass<ExpenseSubCategory>(ExpenseSubCategories)
 
-    constructor(expenseSubCategoryDto: ExpenseSubCategoryDto) : this(
-        expenseSubCategoryDto.name,
-        expenseSubCategoryDto.description
-    ) {
-        id = expenseSubCategoryDto.id
-    }
+    var name by ExpenseSubCategories.name
+    var description by ExpenseSubCategories.description
+    var expenseCategory by ExpenseCategory referencedOn ExpenseSubCategories.expenseCategoryId
 
     override fun toDto() = ExpenseSubCategoryDto(this)
 }

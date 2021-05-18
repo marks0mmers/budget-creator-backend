@@ -1,7 +1,11 @@
 spring:
-  data:
-    mongodb:
-      database: budgetcreator
+#  profiles:
+#    active: logger,return-errors
+  datasource:
+    url: jdbc:postgresql://localhost:5432/budget-creator?user=postgres&password=Truckin09
+    driverClassName: org.postgresql.Driver
+  exposed:
+    generate-ddl: true
 server:
   port: 8000
 logging:

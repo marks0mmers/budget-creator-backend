@@ -7,15 +7,23 @@ import org.springframework.http.HttpHeaders.CONTENT_TYPE
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
-import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 
-class RequestLoggingFilter : WebFilter, Ordered {
-    private val logger = LoggerFactory.getLogger(RequestLoggingFilter::class.java)
-
-    override fun getOrder() = -999
-
-    private fun getRequestMessage(exchange: ServerWebExchange): String {
+/**
+ * A web filter to log incoming requests and outgoing responses
+ *
+ * @see Ordered
+ * @see WebFilter
+ * @author Mark Sommers
+ */
+class RequestLoggingFilter : Ordered by Ordered({ -999 }), WebFilter by WebFilter({ swe, wfc ->
+    /**
+     * Gets a string representation of the HTTP Request
+     *
+     * @param exchange The SWE to get the request from
+     * @return The string version of the request
+     */
+    fun getRequestMessage(exchange: ServerWebExchange): String {
         val request = exchange.request
         val method = request.method
         val path = request.uri.path
@@ -24,7 +32,13 @@ class RequestLoggingFilter : WebFilter, Ordered {
         return ">>>REQUEST>>> $method $path $ACCEPT: $acceptableMediaTypes ${CONTENT_TYPE}: $contentType"
     }
 
-    private fun getResponseMessage(exchange: ServerWebExchange): String {
+    /**
+     * Gets a string representation of the HTTP Response
+     *
+     * @param exchange The SWE to get the response from
+     * @return The string version of the response
+     */
+    fun getResponseMessage(exchange: ServerWebExchange): String {
         val request = exchange.request
         val response = exchange.response
         val method = request.method
@@ -34,13 +48,12 @@ class RequestLoggingFilter : WebFilter, Ordered {
         return "<<<RESPONSE<<< $method $path HTTP${statusCode.value()} ${statusCode.reasonPhrase} ${CONTENT_TYPE}: $contentType"
     }
 
-    override fun filter(swe: ServerWebExchange, wfc: WebFilterChain): Mono<Void> {
-        logger.info(getRequestMessage(swe))
-        val filter = wfc.filter(swe)
-        swe.response.beforeCommit {
-            logger.info(getResponseMessage(swe))
-            Mono.empty()
-        }
-        return filter
+    val logger = LoggerFactory.getLogger(RequestLoggingFilter::class.java)
+    logger.info(getRequestMessage(swe))
+    val filter = wfc.filter(swe)
+    swe.response.beforeCommit {
+        logger.info(getResponseMessage(swe))
+        Mono.empty()
     }
-}
+    filter
+})

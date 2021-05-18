@@ -5,7 +5,9 @@ import com.marks0mmers.budgetcreator.services.ExpenseCategoryService
 import com.marks0mmers.budgetcreator.util.*
 import org.springframework.web.reactive.function.server.*
 
-fun expenseCategoryRouter(expenseCategoryService: ExpenseCategoryService) = coRouter {
+class ExpenseCategoryController(
+    expenseCategoryService: ExpenseCategoryService
+) : RouterFunction<ServerResponse> by coRouter({
     "/api/expenseCategories".nest {
         GET {
             val expenseCategories = expenseCategoryService.getExpenseCategories()
@@ -21,7 +23,7 @@ fun expenseCategoryRouter(expenseCategoryService: ExpenseCategoryService) = coRo
         }
 
         PUT("/{expenseCategoryId}") { req ->
-            val expenseCategoryId = req.pathVariable("expenseCategoryId")
+            val expenseCategoryId = req.pathVariable("expenseCategoryId").toInt()
             val body = req.awaitBody<ExpenseCategorySubmissionView>()
             val updatedExpenseCategory = expenseCategoryService.updateExpenseCategory(expenseCategoryId, body)
             ok().json()
@@ -29,10 +31,10 @@ fun expenseCategoryRouter(expenseCategoryService: ExpenseCategoryService) = coRo
         }
 
         DELETE("/{expenseCategoryId}") { req ->
-            val expenseCategoryId = req.pathVariable("expenseCategoryId")
+            val expenseCategoryId = req.pathVariable("expenseCategoryId").toInt()
             val deletedExpenseCategory = expenseCategoryService.deleteExpenseCategory(expenseCategoryId)
             ok().json()
                 .bodyValueAndAwait(deletedExpenseCategory)
         }
     }
-}
+})

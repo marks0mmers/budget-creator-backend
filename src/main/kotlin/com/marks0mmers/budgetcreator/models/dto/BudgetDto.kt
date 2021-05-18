@@ -1,22 +1,19 @@
 package com.marks0mmers.budgetcreator.models.dto
 
 import com.marks0mmers.budgetcreator.models.persistent.Budget
-import com.marks0mmers.budgetcreator.util.fail
 
 data class BudgetDto(
-    val id: String,
+    val id: Int,
     val title: String,
-    val expenseCategoryId: String,
-    val expenseSubCategoryId: String,
-    val primaryUserId: String,
-    val incomeSources: List<IncomeSourceDto>
+    val primaryUserId: Int,
+    val incomeSources: List<IncomeSourceDto>,
+    val expenseSources: List<ExpenseSourceDto>
 ) {
     constructor(budget: Budget) : this(
-        budget.id ?: fail("Budget id is null"),
+        budget.id.value,
         budget.title,
-        budget.expenseCategoryId,
-        budget.expenseSubCategoryId,
-        budget.primaryUserId,
-        budget.incomeSources.map(::IncomeSourceDto)
+        budget.primaryUser.id.value,
+        budget.incomeSources.map(::IncomeSourceDto),
+        budget.expenseSources.map(::ExpenseSourceDto)
     )
 }
