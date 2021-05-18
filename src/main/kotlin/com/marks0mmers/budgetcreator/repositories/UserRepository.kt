@@ -2,8 +2,8 @@ package com.marks0mmers.budgetcreator.repositories
 
 import com.marks0mmers.budgetcreator.models.constants.Role
 import com.marks0mmers.budgetcreator.models.persistent.User
+import com.marks0mmers.budgetcreator.models.persistent.User.Users
 import com.marks0mmers.budgetcreator.models.persistent.UserRole
-import com.marks0mmers.budgetcreator.models.persistent.Users
 import com.marks0mmers.budgetcreator.models.views.CreateUserView
 import com.marks0mmers.budgetcreator.util.fail
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction

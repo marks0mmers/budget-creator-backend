@@ -1,6 +1,7 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
+import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
 	id("org.springframework.boot") version "2.4.4"
@@ -52,6 +53,10 @@ tasks.withType<KotlinCompile> {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
 		jvmTarget = "11"
 	}
+}
+
+tasks.withType<BootRun> {
+	mainClass.set("com.marks0mmers.budgetcreator.BudgetCreatorApplication")
 }
 
 tasks.withType<Detekt>().configureEach {

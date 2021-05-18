@@ -6,9 +6,10 @@ import com.marks0mmers.budgetcreator.repositories.ExpenseSourceRepository
 import com.marks0mmers.budgetcreator.util.fail
 import org.springframework.http.HttpStatus.NOT_FOUND
 
-class ExpenseSourceService(
-    private val expenseSourceRepository: ExpenseSourceRepository
-) {
+class ExpenseSourceService {
+
+    private val expenseSourceRepository = ExpenseSourceRepository
+
     suspend fun addExpenseSourceToBudget(budgetId: Int, expenseSource: ExpenseSourceSubmissionView): ExpenseSourceDto {
         return expenseSourceRepository.create(budgetId, expenseSource)
             ?: fail("Cannot find budget $budgetId", NOT_FOUND)

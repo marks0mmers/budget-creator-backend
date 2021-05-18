@@ -6,7 +6,10 @@ import com.marks0mmers.budgetcreator.repositories.ExpenseSubCategoryRepository
 import com.marks0mmers.budgetcreator.util.fail
 import org.springframework.http.HttpStatus.NOT_FOUND
 
-class ExpenseSubCategoryService(private val expenseSubCategoryRepository: ExpenseSubCategoryRepository) {
+class ExpenseSubCategoryService {
+
+    private val expenseSubCategoryRepository = ExpenseSubCategoryRepository
+
     suspend fun addExpenseSubCategoryToExpenseCategory(
         expenseCategoryId: Int,
         expenseSubCategory: ExpenseCategorySubmissionView

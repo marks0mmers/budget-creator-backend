@@ -1,6 +1,7 @@
 package com.marks0mmers.budgetcreator.models.persistent
 
 import com.marks0mmers.budgetcreator.models.dto.UserDto
+import com.marks0mmers.budgetcreator.models.persistent.UserRole.UserRoles
 import com.marks0mmers.budgetcreator.models.types.DtoConvertible
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -8,15 +9,14 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.springframework.security.core.userdetails.UserDetails
 
-object Users : IntIdTable("users") {
-    val username = varchar("name", 50).index(isUnique = true)
-    val password = varchar("password", 300)
-    val firstName = varchar("first_name", 50)
-    val lastName = varchar("last_name", 50)
-    val enabled = bool("enabled")
-}
-
 class User(id: EntityID<Int>) : IntEntity(id), UserDetails, DtoConvertible<UserDto> {
+    object Users : IntIdTable("users") {
+        val username = varchar("name", 50).index(isUnique = true)
+        val password = varchar("password", 300)
+        val firstName = varchar("first_name", 50)
+        val lastName = varchar("last_name", 50)
+        val enabled = bool("enabled")
+    }
     companion object : IntEntityClass<User>(Users)
 
     var userName by Users.username

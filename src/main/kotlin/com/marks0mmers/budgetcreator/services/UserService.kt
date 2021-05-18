@@ -16,7 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder
  * @property passwordEncoder The encoder used to encode passwords
  * @author Mark Sommers
  */
-class UserService(private val userRepository: UserRepository, private val passwordEncoder: PasswordEncoder) {
+class UserService(private val passwordEncoder: PasswordEncoder) {
+
+    private val userRepository = UserRepository
+
     /**
      * Log into the application
      *

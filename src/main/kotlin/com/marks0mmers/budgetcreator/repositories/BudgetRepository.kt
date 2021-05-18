@@ -1,9 +1,9 @@
 package com.marks0mmers.budgetcreator.repositories
 
 import com.marks0mmers.budgetcreator.models.persistent.Budget
-import com.marks0mmers.budgetcreator.models.persistent.Budgets
+import com.marks0mmers.budgetcreator.models.persistent.Budget.Budgets
 import com.marks0mmers.budgetcreator.models.persistent.User
-import com.marks0mmers.budgetcreator.models.persistent.Users
+import com.marks0mmers.budgetcreator.models.persistent.User.Users
 import com.marks0mmers.budgetcreator.models.views.BudgetSubmissionView
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.flow.asFlow

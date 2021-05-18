@@ -7,7 +7,10 @@ import com.marks0mmers.budgetcreator.repositories.ExpenseCategoryRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.flow.Flow
 
-class ExpenseCategoryService(private val expenseCategoryRepository: ExpenseCategoryRepository) {
+class ExpenseCategoryService {
+
+    private val expenseCategoryRepository = ExpenseCategoryRepository
+
     suspend fun getExpenseCategories(): Flow<ExpenseCategoryDto> {
         return expenseCategoryRepository
             .findAll()

@@ -25,54 +25,51 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 @SpringBootApplication
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
-class BudgetCreatorApplication
+class BudgetCreatorApplication {
+	companion object {
+		/**
+		 * The main function for the program. It configures all Spring beans as well
+		 *
+		 * @param args The command line args
+		 * @see runApplication
+		 * @see beans
+		 * @author Mark Sommers
+		 */
+		@JvmStatic
+		fun main(args: Array<String>) {
+			runApplication<BudgetCreatorApplication>(*args) {
+				addInitializers(ApplicationContextInitializer<GenericApplicationContext> { context ->
+					beans {
+						bean { JWTUtil() }
+						bean { BCryptPasswordEncoder() }
+						bean { AuthenticationManager(ref()) }
+						bean { WebSecurityConfig(ref(), ref()) }
 
-/**
- * The main function for the program. It configures all Spring beans as well
- *
- * @param args The command line args
- * @see runApplication
- * @see beans
- * @author Mark Sommers
- */
-fun main(args: Array<String>) {
-	runApplication<BudgetCreatorApplication>(*args) {
-		addInitializers(ApplicationContextInitializer<GenericApplicationContext> { context ->
-			beans {
-				bean { JWTUtil() }
-				bean { BCryptPasswordEncoder() }
-				bean { AuthenticationManager(ref()) }
-				bean { WebSecurityConfig(ref(), ref()) }
+						profile("return-errors") {
+							bean { GlobalErrorHandler() }
+						}
 
-				profile("return-errors") {
-					bean { GlobalErrorHandler() }
-				}
+						profile("logger") {
+							bean { RequestLoggingFilter() }
+						}
 
-				profile("logger") {
-					bean { RequestLoggingFilter() }
-				}
+						bean { UserController(ref(), ref()) }
+						bean { BudgetController(ref()) }
+						bean { IncomeSourceController(ref()) }
+						bean { ExpenseSourceController(ref()) }
+						bean { ExpenseCategoryController(ref()) }
+						bean { ExpenseSubCategoryController(ref()) }
 
-				bean { UserController(ref(), ref()) }
-				bean { BudgetController(ref()) }
-				bean { IncomeSourceController(ref()) }
-				bean { ExpenseSourceController(ref()) }
-				bean { ExpenseCategoryController(ref()) }
-				bean { ExpenseSubCategoryController(ref()) }
-
-				bean { UserService(ref(), ref()) }
-				bean { BudgetService(ref()) }
-				bean { IncomeSourceService(ref()) }
-				bean { ExpenseSourceService(ref()) }
-				bean { ExpenseCategoryService(ref()) }
-				bean { ExpenseSubCategoryService(ref()) }
-
-				bean { BudgetRepository }
-				bean { ExpenseCategoryRepository }
-				bean { ExpenseSourceRepository }
-				bean { ExpenseSubCategoryRepository }
-				bean { IncomeSourceRepository }
-				bean { UserRepository }
-			}.initialize(context)
-		})
+						bean { UserService(ref()) }
+						bean { BudgetService() }
+						bean { IncomeSourceService() }
+						bean { ExpenseSourceService() }
+						bean { ExpenseCategoryService() }
+						bean { ExpenseSubCategoryService() }
+					}.initialize(context)
+				})
+			}
+		}
 	}
 }
+

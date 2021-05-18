@@ -7,7 +7,10 @@ import com.marks0mmers.budgetcreator.repositories.BudgetRepository
 import com.marks0mmers.budgetcreator.util.fail
 import kotlinx.coroutines.flow.Flow
 
-class BudgetService(private val budgetRepository: BudgetRepository) {
+class BudgetService {
+
+    private val budgetRepository = BudgetRepository
+
     suspend fun getAllBudgetItemsForUser(username: String): Flow<BudgetDto> {
         return budgetRepository
             .findAllByUsername(username)
