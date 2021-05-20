@@ -28,10 +28,11 @@ object BudgetRepository {
     }
 
     /**
-     * Create
+     * Create a budget
      *
-     * @param budget
-     * @param username
+     * @param budget The budget values to create
+     * @param username The user to add the budget to
+     * @return The created budget
      */
     suspend fun create(budget: BudgetSubmissionView, username: String) = newSuspendedTransaction {
         val user = User.find { Users.username eq username }.firstOrNull() ?: fail("Cannot find user $username")
@@ -41,12 +42,25 @@ object BudgetRepository {
         }.toDto()
     }
 
+    /**
+     * Updates a budget
+     *
+     * @param budgetId The id of the budget to update
+     * @param budget The new values to update the budget with
+     * @return The updated budget
+     */
     suspend fun update(budgetId: Int, budget: BudgetSubmissionView) = newSuspendedTransaction {
         Budget.findById(budgetId)?.apply {
             title = budget.title
         }?.toDto()
     }
 
+    /**
+     * Delete a budget
+     *
+     * @param budgetId The id of the budget to delete
+     * @return The deleted budget
+     */
     suspend fun delete(budgetId: Int) = newSuspendedTransaction {
         Budget.findById(budgetId)?.apply { delete() }?.toDto()
     }
