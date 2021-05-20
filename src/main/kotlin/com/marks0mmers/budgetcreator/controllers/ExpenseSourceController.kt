@@ -5,6 +5,16 @@ import com.marks0mmers.budgetcreator.services.ExpenseSourceService
 import com.marks0mmers.budgetcreator.util.POST
 import org.springframework.web.reactive.function.server.*
 
+/**
+ * The API Controller for Expense Source functionality
+ *
+ * @see RouterFunction
+ * @see CoRouterFunctionDsl
+ * @constructor
+ * Injects the parameters as dependencies
+ *
+ * @param expenseSourceService The expense source service containing business logic
+ */
 class ExpenseSourceController(
     expenseSourceService: ExpenseSourceService
 ) : RouterFunction<ServerResponse> by coRouter({

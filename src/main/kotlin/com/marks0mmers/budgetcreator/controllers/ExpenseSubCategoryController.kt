@@ -5,6 +5,16 @@ import com.marks0mmers.budgetcreator.services.ExpenseSubCategoryService
 import com.marks0mmers.budgetcreator.util.POST
 import org.springframework.web.reactive.function.server.*
 
+/**
+ * The API Controller for Expense Sub-category functionality
+ *
+ * @see RouterFunction
+ * @see CoRouterFunctionDsl
+ * @constructor
+ * Injects the parameters as dependencies
+ *
+ * @param expenseSubCategoryService The expense sub-category service containing business logic
+ */
 class ExpenseSubCategoryController(
     expenseSubCategoryService: ExpenseSubCategoryService
 ) : RouterFunction<ServerResponse> by coRouter({

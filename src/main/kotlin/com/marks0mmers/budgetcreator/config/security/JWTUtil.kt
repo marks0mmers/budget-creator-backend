@@ -1,6 +1,6 @@
 package com.marks0mmers.budgetcreator.config.security
 
-import com.marks0mmers.budgetcreator.models.constants.Role
+import com.marks0mmers.budgetcreator.models.persistent.Role
 import com.marks0mmers.budgetcreator.util.PropertyValue
 import com.marks0mmers.budgetcreator.util.instant
 import com.marks0mmers.budgetcreator.util.javaDate

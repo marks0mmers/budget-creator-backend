@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder.AUTHENTICATION
 import org.springframework.security.config.web.server.ServerHttpSecurityDsl
@@ -16,6 +17,7 @@ import org.springframework.web.cors.reactive.CorsConfigurationSource
 import org.springframework.web.reactive.function.server.CoRouterFunctionDsl
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 import java.nio.charset.Charset
 import java.util.*
@@ -45,21 +47,16 @@ fun ServerHttpSecurityDsl.authenticationTokenFilter(authenticationManager: React
     }, AUTHENTICATION)
 }
 
-/**
- * Converts an Instant to a Java Date object
- */
+/** Converts an Instant to a Java Date object */
 val Instant.javaDate: Date
     get() = Date.from(toJavaInstant())
 
-/**
- * Converts a Java Date to an Instant object
- */
+/** Converts a Java Date to an Instant object */
 val Date.instant: Instant
     get() = Instant.fromEpochMilliseconds(toInstant().toEpochMilli())
 
 /**
  * Gets the first header value of the "Authorization" key
- *
  * @see [HttpHeaders.getFirst]
  */
 val HttpHeaders.authorization: String?
@@ -71,6 +68,34 @@ val HttpHeaders.authorization: String?
  */
 val HttpHeaders.bearerAuth: String?
     get() = if (authorization?.startsWith("Bearer ") == true) authorization?.substring(7) else null
+
+/**
+ * Gets a string representation of the HTTP Request
+ *
+ * @return The string version of the request
+ */
+val ServerWebExchange.requestMessage: String
+    get() {
+        val method = request.method
+        val path = request.uri.path
+        val acceptableMediaTypes = request.headers.accept
+        val contentType = request.headers.contentType
+        return ">>>REQUEST>>> $method $path ${HttpHeaders.ACCEPT}: $acceptableMediaTypes ${HttpHeaders.CONTENT_TYPE}: $contentType"
+    }
+
+/**
+ * Gets a string representation of the HTTP Response
+ *
+ * @return The string version of the response
+ */
+val ServerWebExchange.responseMessage: String
+    get() {
+        val method = request.method
+        val path = request.uri.path
+        val statusCode = response.statusCode ?: HttpStatus.CONTINUE
+        val contentType = response.headers.contentType
+        return "<<<RESPONSE<<< $method $path HTTP${statusCode.value()} ${statusCode.reasonPhrase} ${HttpHeaders.CONTENT_TYPE}: $contentType"
+    }
 
 /**
  * Helper function to make a Void Mono from a Runnable

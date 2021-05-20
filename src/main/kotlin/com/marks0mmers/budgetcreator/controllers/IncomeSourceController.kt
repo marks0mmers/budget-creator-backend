@@ -5,6 +5,16 @@ import com.marks0mmers.budgetcreator.services.IncomeSourceService
 import com.marks0mmers.budgetcreator.util.POST
 import org.springframework.web.reactive.function.server.*
 
+/**
+ * The API Controller for Income Source related functionality
+ *
+ * @see RouterFunction
+ * @see CoRouterFunctionDsl
+ * @constructor
+ * Injects the parameters as dependencies
+ *
+ * @param incomeSourceService The income source service containing business logic
+ */
 class IncomeSourceController(
     incomeSourceService: IncomeSourceService
 ) : RouterFunction<ServerResponse> by coRouter({

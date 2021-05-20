@@ -1,6 +1,6 @@
 package com.marks0mmers.budgetcreator.config.security
 
-import com.marks0mmers.budgetcreator.models.constants.Role
+import com.marks0mmers.budgetcreator.models.persistent.Role
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import reactor.core.publisher.Mono

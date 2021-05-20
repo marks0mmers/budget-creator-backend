@@ -1,7 +1,7 @@
 package com.marks0mmers.budgetcreator.controllers
 
 import com.marks0mmers.budgetcreator.config.security.JWTUtil
-import com.marks0mmers.budgetcreator.models.constants.Role
+import com.marks0mmers.budgetcreator.models.persistent.Role
 import com.marks0mmers.budgetcreator.models.dto.UserDto
 import com.marks0mmers.budgetcreator.models.views.AuthRequestView
 import com.marks0mmers.budgetcreator.models.views.CreateUserView

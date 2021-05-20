@@ -6,6 +6,16 @@ import org.springframework.web.reactive.function.server.*
 import com.marks0mmers.budgetcreator.util.*
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 
+/**
+ * The API Controller for Budget related functionality
+ *
+ * @see RouterFunction
+ * @see CoRouterFunctionDsl
+ * @constructor
+ * Injects the parameters as dependencies
+ *
+ * @param budgetService The budget service containing business logic
+ */
 class BudgetController(
     budgetService: BudgetService
 ): RouterFunction<ServerResponse> by coRouter({

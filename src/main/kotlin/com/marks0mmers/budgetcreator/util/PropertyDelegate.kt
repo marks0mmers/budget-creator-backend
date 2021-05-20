@@ -34,9 +34,9 @@ class PropertyValue<T, TRet>(private val basePath: String, private val transform
      * @return The returned type of the spring config variable
      */
     operator fun getValue(thisRef: T, property: KProperty<*>): TRet {
-        val props = YamlPropertiesFactoryBean().let {
-            it.setResources(ClassPathResource("/application.yml"))
-            it.`object`
+        val props = YamlPropertiesFactoryBean().run {
+            setResources(ClassPathResource("/application.yml"))
+            `object`
         }
         return props?.getProperty("$basePath.${property.name}").run(transformer)
     }

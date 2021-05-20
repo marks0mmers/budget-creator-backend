@@ -6,7 +6,6 @@ import com.marks0mmers.budgetcreator.config.security.AuthenticationManager
 import com.marks0mmers.budgetcreator.config.security.JWTUtil
 import com.marks0mmers.budgetcreator.config.security.WebSecurityConfig
 import com.marks0mmers.budgetcreator.controllers.*
-import com.marks0mmers.budgetcreator.repositories.*
 import com.marks0mmers.budgetcreator.services.*
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

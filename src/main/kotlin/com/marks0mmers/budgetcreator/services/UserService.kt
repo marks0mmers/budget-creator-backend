@@ -6,18 +6,18 @@ import com.marks0mmers.budgetcreator.models.views.CreateUserView
 import com.marks0mmers.budgetcreator.repositories.UserRepository
 import com.marks0mmers.budgetcreator.util.fail
 import com.marks0mmers.budgetcreator.util.BudgetCreatorException
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.*
 import org.springframework.security.crypto.password.PasswordEncoder
 
 /**
  * The Service layer responsible for handling [User] functionality
  *
- * @property userRepository The user MongoDB Repository
  * @property passwordEncoder The encoder used to encode passwords
  * @author Mark Sommers
  */
 class UserService(private val passwordEncoder: PasswordEncoder) {
 
+    /** The user Postgres Repository */
     private val userRepository = UserRepository
 
     /**
@@ -29,9 +29,11 @@ class UserService(private val passwordEncoder: PasswordEncoder) {
      * @throws BudgetCreatorException if the user cannot login
      */
     suspend fun login(username: String, password: String): UserDto {
-        return userRepository
-            .login(username, password, passwordEncoder)
-            ?: fail("Cannot find user with username: $username")
+        val (user, hashedPassword) = userRepository.login(username)
+        return when {
+            passwordEncoder.matches(password, hashedPassword) -> user ?: fail("", UNAUTHORIZED)
+            else -> fail("", UNAUTHORIZED)
+        }
     }
 
     /**
@@ -44,7 +46,7 @@ class UserService(private val passwordEncoder: PasswordEncoder) {
     suspend fun getUserByUsername(username: String): UserDto {
         return userRepository
             .findByUsername(username)
-            ?: fail("Cannot find user $username", HttpStatus.NOT_FOUND)
+            ?: fail("Cannot find user $username", NOT_FOUND)
     }
 
     /**
@@ -69,6 +71,6 @@ class UserService(private val passwordEncoder: PasswordEncoder) {
     suspend fun getUserById(userId: Int): UserDto {
         return userRepository
             .findById(userId)
-            ?: fail("User with id: $userId doesn't exist", HttpStatus.NOT_FOUND)
+            ?: fail("User with id: $userId doesn't exist", NOT_FOUND)
     }
 }
